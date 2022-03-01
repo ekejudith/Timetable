@@ -1,2 +1,2 @@
 # Webprogramozás laborfeladatok
-helofty
+helo szia helo
