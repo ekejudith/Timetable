@@ -1,0 +1,54 @@
+
+body {
+  background-image: url('lila.jpg');
+  background-repeat: repeat-y;
+  background-position-x: center;
+  background-size:cover;
+}
+
+em , p {
+    background-color:cornsilk;
+    text-decoration:solid;
+}
+
+ul.exotic-fruit-list
+{
+    list-style:square;
+}
+
+ul.dried-fruit-list
+{
+    list-style:disc;  
+}
+
+.exotic-fruit-article{
+    color: darkgreen;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-style: inherit;
+    text-decoration: wavy;
+    font-weight: 100;
+}
+
+.exotic-fruit-article, h1,h2{
+    color: rgb(102, 80, 151);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-style: inherit;
+    text-decoration: wavy;
+    font-weight: 100;
+}
+
+section > h2 + p {
+    color:rgb(219, 35, 127);
+    font-size: 1em;
+}
+
+a:link{
+    color:blue;
+}
+a:visited{
+    color:blueviolet;
+}
+a:hover{
+    color:darkred;
+}
+
