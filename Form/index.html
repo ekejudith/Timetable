@@ -16,9 +16,10 @@
             <div class="field">
                 <label for="name">Name:</label>
                 <br>
-                <input type="text" id="name" placeholder="Siegel Judith" pattern="[A-Z][a-z]*([' '][A-Z][a-z]*)+"
+                <input type="text" id="name" placeholder="Siegel Judith" onblur=nameValidator() pattern="[A-Z][a-z]*([' '][A-Z][a-z]*)+"
                     required>
                 <br>
+                <small id="nameValidatorLabel" hidden>Error: invalid name!</small>
             </div>
 
             <div class="field">
@@ -39,7 +40,7 @@
             <div class="field">
                 <label for="webpage">Favorite website:</label>
                 <br>
-                <input type="text" id="webpage" onblur=webpageValidator() placeholder="www.webpage.com" required>
+                <input type="url" id="webpage" onblur=webpageValidator() placeholder="http://www.webpage.com" required>
                 <br>
                 <small id="webpageValidatorLabel" hidden>Error: invalid webpage! </small>
             </div>
@@ -59,7 +60,7 @@
 
             <div class="field">
                 <br>
-                <input type="submit" id="submit">
+                <input type="submit" id="submit" disabled="true">
             </div>
 
         </form>

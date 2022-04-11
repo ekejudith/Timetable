@@ -1,5 +1,6 @@
 #emailValidatorLabel,
-#webpageValidatorLabel {
+#webpageValidatorLabel ,
+#nameValidatorLabel{
     color: red;
 }
 
