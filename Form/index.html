@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="form.css">
+    <title>Form</title>
+</head>
+
+<body class="form" onclick=footer()>
+    <div id="formDiv">
+        <form id="form" action="jatek.html">
+
+            <div class="field">
+                <label for="name">Name:</label>
+                <br>
+                <input type="text" id="name" placeholder="Siegel Judith" onblur=nameValidator() pattern="[A-Z][a-z]*([' '][A-Z][a-z]*)+"
+                    required>
+                <br>
+                <small id="nameValidatorLabel" hidden>Error: invalid name!</small>
+            </div>
+
+            <div class="field">
+                <label for="date">Birthday:</label>
+                <br>
+                <input type="date" id="date" required>
+                <br>
+            </div>
+
+            <div class="field">
+                <label for="email">E-mail:</label>
+                <br>
+                <input type="email" id="email" onblur=emailValidator() placeholder="anonimus@gmail.com" required>
+                <br>
+                <small id="emailValidatorLabel" hidden>Error: invalid email!</small>
+            </div>
+
+            <div class="field">
+                <label for="webpage">Favorite website:</label>
+                <br>
+                <input type="url" id="webpage" onblur=webpageValidator() placeholder="http://www.webpage.com" required>
+                <br>
+                <small id="webpageValidatorLabel" hidden>Error: invalid webpage! </small>
+            </div>
+
+            <div class="field">
+                <label for="nickname">Nickname:</label>
+                <br>
+                <input type="text" id="nickname" placeholder="anonimous" required>
+            </div>
+
+            <div class="field">
+                <label for="money">Money:</label>
+                <br>
+                <input type="text" id="money" pattern="^(0|[1-9][0-9]*)$" placeholder="300" required>
+
+            </div>
+
+            <div class="field">
+                <br>
+                <input type="submit" id="submit" disabled>
+            </div>
+
+        </form>
+    </div>
+    <footer class="footer">
+        <div>
+
+        </div>
+    </footer>
+    <script src="form.js"></script>
+</body>
+
+</html>

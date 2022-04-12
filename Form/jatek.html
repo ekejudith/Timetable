@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ko-Papir-Ollo</title>
+    <link rel="stylesheet" href="form.css">
+
+</head>
+
+<body class="game" onload="initComponenets()">
+    <h1>Kő papír olló</h1>
+    <div class="info">
+        <div class="player-info">
+            <label>Name: </label> <label id="player-name"></label>
+            <br>
+            <label>Nickname: </label> <label id="player-nickname"></label>
+            <br>
+            <label>Money: </label> <label id="player-money"></label>
+        </div>
+
+        <div class="server-info">
+            <label>Name: </label> <label id="server-name">Computer</label>
+            <br>
+            <label>Nickname: </label> <label id="server-nickname">PC</label>
+            <br>
+            <label>Money: </label> <label id="server-money"></label>
+        </div>
+    </div>
+    <div class="images">
+        <div class="player-images">
+            <img id="player-rock" src="rock.png" alt="rock" width=300 height=250 onclick="selectRock()">
+            <img id="player-paper" src="paper.png" alt="paper" width=200 height=250 onclick="selectPaper()">
+            <img id="player-scissors" src="scissors.png" alt="scissor" width=300 height=200 onclick="selectScissors()">
+        </div>
+        <div class="server-images">
+            <img id="server-rock" src="rock.png" alt="rock" width=300 height=250>
+            <img id="server-paper" src="paper.png" alt="paper" width=200 height=250>
+            <img id="server-scissors" src="scissors.png" alt="scissor" width=300 height=200>
+        </div>
+    </div>
+
+    <div class="button">
+        <button id="new-game" onclick="newGame()">New game!</button>
+    </div>
+    <br>
+
+    <div class="message">
+        <label id="message"></label>
+    </div>
+
+    <script src="jatek.js"></script>
+
+</body>
+
+
+</html>
