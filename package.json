@@ -1,0 +1,31 @@
+{
+  "name": "lab-sjim2077",
+  "version": "1.0.0",
+  "description": "*****************\r * Siegel Judith \r * 524. csoport  \r *****************",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ubb-webprog/labs2022/lab-sjim2077.git"
+  },
+  "author": "Siegel Judith",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3",
+    "morgan": "^1.9.1",
+    "express-formidable": "^1.2.0"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/ubb-webprog/labs2022/lab-sjim2077/issues"
+  },
+  "homepage": "https://gitlab.com/ubb-webprog/labs2022/lab-sjim2077#readme",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
