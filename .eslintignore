@@ -13,3 +13,7 @@ bower_components/
 # conf files
 protractor.conf.js
 karma.conf.js
+
+
+# client side typical
+script.js
