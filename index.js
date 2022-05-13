@@ -2,10 +2,16 @@ import express from 'express';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import eformidable from 'express-formidable';
+import {
+  insertStudent, deleteSubjectOfStudent, insertSubject, insertFileOfSubject, insertSubjectOfStudent,
+  isStudent, createTables, isSubject, isSubjectOfStudent, isFileOfSubject, getAllSubjects,
+  getSubject,
+  getFilesOfSubject,
+} from './database/timetable.js';
 
 const app = express();
 
-app.use(express.static(join(process.cwd(), 'static')));
+app.use(express.static(join(process.cwd(), 'static/')));
 app.use(express.urlencoded({ extended: true }));
 
 const uploadDir = join(process.cwd(), 'uploadDir');
@@ -15,115 +21,162 @@ if (!existsSync(uploadDir)) {
 }
 app.use(eformidable({ uploadDir }));
 
-const students = {};
-const subjects = {};
-const files = {};
+createTables().catch((err) => {
+  console.error(err);
+});
 
-app.post('/submit_form_tantargyak', (request, response) => {
+app.set('view engine', 'ejs');
+
+app.post('/submit_subject', async (request, response) => {
   const regex = /^[a-zA-Z ]+$/;
-  if (request.fields.code === '' || request.fields.name === '' || request.fields.course <= 0 || request.fields.seminar <= 0 || request.fields.lab <= 0 || !regex.test(request.fields.name)) {
-    const respBody = `Hibas bemeneti adatok!
-        `;
-    console.log(respBody);
-    response.set('Content-Type', 'text/plain;charset=utf-8');
-    response.writeHead(406);
-    response.end(respBody);
+  response.type('.html');
+
+  if (request.fields.subjectID === '' || request.fields.subjectName === '' || request.fields.course <= 0 || request.fields.seminar <= 0 || request.fields.lab <= 0 || !regex.test(request.fields.name)) {
+    const error = 'Hibas bemeneti adatok!';
+    response.status(400);
+    response.render('subject', { subject: request.fields, error });
   } else {
-    const subjectID = request.fields.code;
-    if (!(subjectID in subjects)) {
-      subjects[subjectID] = true;
-
-      const respBody = `A szerver sikeresen megkapta a következő információt:
-        Egyedi kod: ${request.fields.code}
-        Nev: ${request.fields.name}
-        Evfolyam: ${request.fields.year}
-        Kurzusok szama: ${request.fields.course}
-        Szeminariumok szama: ${request.fields.seminar}
-        Laborok szama: ${request.fields.lab}
-        `;
-
-      console.log(respBody);
-      response.set('Content-Type', 'text/plain;charset=utf-8');
-      response.end(respBody);
+    const issubject = await isSubject(request.fields);
+    if (!issubject) {
+      await insertSubject(request.fields);
+      response.redirect('/');
     } else {
-      const respBody = `Hiba: Az adott tantargy mar letezik!
-        `;
-      console.log(respBody);
-      response.set('Content-Type', 'text/plain;charset=utf-8');
-      response.end(respBody);
+      const error = 'Hiba: Az adott tantargy mar letezik!';
+      response.status(400);
+      response.render('subject', { subject: request.fields, error });
     }
   }
 });
 
-app.post('/submit_form_diak', (request, response) => {
-  const { subject } = request.fields.subject;
-  const { studentID } = request.fields.studentID;
-  if (subject === '' || studentID === '') {
-    const respBody = `Hibas bemeneti adatok!
-    `;
-    console.log(respBody);
-    response.set('Content-Type', 'text/plain;charset=utf-8');
-    response.writeHead(406);
-    response.end(respBody);
-  } else {
-    let respBody = '';
-    if (!(subject in subjects)) {
-      respBody = 'Hiba: Az adott tantargy nem letezik!';
+async function checkConnectionType(request, response) {
+  const subjectOfStudent = await isSubjectOfStudent(request.fields);
+  let error = '';
+
+  if (request.fields.connection === 'join') {
+    if (!subjectOfStudent) {
+      await insertSubjectOfStudent(request.fields);
+      error = 'A csatlakozas sikeres volt!';
     } else {
-      const { connection } = request.fields.connection;
-      if (connection === 'join') {
-        if (!([studentID, subject] in students) || students[[studentID, subject]] === false) {
-          students[[studentID, subject]] = true;
-          respBody = `A tantargyhoz valo csatlakozas sikereses!
-                Diak ID: ${studentID}
-                Tantargy kodja:  ${subject}
-                `;
-        } else {
-          respBody = ` ${studentID} mar csatlakozott a ${subject} tantargyhoz!
-                `;
-        }
-      } else if (students[[studentID, subject]] === true) {
-        students[[studentID, subject]] = false;
-        respBody = `A tantargybol valo kilepes sikereses!
-                Diak ID: ${studentID}
-                Tantargy kodja:  ${subject}
-                `;
+      error = `${request.fields.studentID} mar csatlakozott a ${request.fields.subjectID} tantargyhoz!\n`;
+      response.status(304);
+    }
+  } else if (request.fields.connection === 'unjoin') {
+    if (subjectOfStudent) {
+      await deleteSubjectOfStudent(request.fields);
+      error = 'A kilepes sikeres volt!';
+    } else {
+      error = `${request.fields.studentID} nem resze a ${request.fields.subjectID} tantargynak!\n`;
+      response.status(304);
+    }
+  } else {
+    error = 'Hibas bemeneti adatok!';
+    response.status(406);
+  }
+  return error;
+}
+
+app.post('/submit_student', async (request, response) => {
+  const subject = await isSubject(request.fields);
+  response.type('.html');
+  let error = '';
+
+  if (request.fields.subjectID === '' || request.fields.studentID === '' || request.fields.studentName === '') {
+    error = 'Hibas bemeneti adatok!';
+    response.status(406);
+  } else if (!subject) {
+    error = 'Hiba: Az adott tantargy nem letezik!';
+    response.status(406);
+  } else {
+    const student = await isStudent(request.fields);
+    if (!student) {
+      await insertStudent(request.fields);
+    }
+    error = await checkConnectionType(request, response);
+  }
+  const subjects = await getAllSubjects();
+  response.status(200);
+  response.render('student', { student: request.fields, subjects, error });
+});
+
+app.post('/submit_file/:id', async (request, response) => {
+  const file = request.files.myfile;
+  response.type('.html');
+  if (file === '') {
+    response.status(406);
+  } else {
+    const split = file.path.split('\\');
+    const len = split.length;
+    const filePath = `\\${split[len - 2]}\\${split[len - 1]}`;
+    await insertFileOfSubject(request.params.id, filePath);
+  }
+  response.redirect(`/subjects/${request.params.id}`);
+});
+
+app.post('/submit_file', async (request, response) => {
+  const file = request.files.myfile;
+  response.type('.html');
+  let error = '';
+
+  if (file === '' || request.fields.subjectID === '') {
+    error = 'Hibas bemeneti adatok!\n';
+    response.status(406);
+    response.render('file', { student: request.fields, error });
+  } else {
+    const issubject = await isSubject(request.fields);
+    if (!issubject) {
+      error = 'Hiba: Az adott tantargy nem letezik!\n';
+      response.status(406);
+      response.render('file', { student: request.fields, error });
+    } else {
+      const isFile = await isFileOfSubject(request.fields, file.path);
+      if (isFile) {
+        error = 'Hiba: Az adott file mar letezik!\n';
+        response.status(406);
+        response.render('file', { student: request.fields, error });
       } else {
-        respBody = `${studentID} mar kilepett a ${subject} tantargybol!
-                `;
+        const split = file.path.split('\\');
+        const len = split.length;
+        const filePath = `\\${split[len - 2]}\\${split[len - 1]}`;
+        await insertFileOfSubject(request.fields.subjectID, filePath);
+        response.redirect('/');
       }
     }
-    console.log(respBody);
-    response.set('Content-Type', 'text/plain;charset=utf-8');
-    response.end(respBody);
   }
 });
 
-app.post('/submit_form_allomany', (request, response) => {
-  const file = request.files.myfile;
-  const { subjectID } = request.fields.subjectID;
-  if (file === '' || subjectID === '') {
-    const respBody = `Hibas bemeneti adatok!
-    `;
-    console.log(respBody);
-    response.set('Content-Type', 'text/plain;charset=utf-8');
-    response.writeHead(406);
-    response.end(respBody);
-  } else {
-    let respBody = '';
-    if (!(subjectID in subjects)) {
-      respBody = `Hiba: Az adott tantargy nem letezik!
-        `;
-    } else {
-      respBody = `A szerver sikeresen megkapta a következő információt:
-        Tantargy kodja:  ${subjectID}
-        Állomány: ${file.name}
-        `;
-      files[[subjectID, file.name]] = true;
-    }
-    console.log(respBody);
-    response.set('Content-Type', 'text/plain;charset=utf-8');
-    response.end(respBody);
+app.get('/subject', async (request, response) => {
+  response.render('subject', { subject: request.fields, error: '' });
+});
+
+app.get('/student', async (request, response) => {
+  const subjects = await getAllSubjects();
+  response.render('student', { student: request.fields, subjects, error: '' });
+});
+
+app.get('/file', async (request, response) => {
+  response.render('file', { subject: request.fields, error: '' });
+});
+
+app.use('/subjects/:id', async (request, response) => {
+  try {
+    const subject = await getSubject(request.params.id);
+    const files = await getFilesOfSubject(request.params.id);
+    response.render('details', { subject: subject[0], files });
+  } catch (err) {
+    console.error(err);
+    response.status(500);
+    response.send('Error');
+  }
+});
+
+app.use('/', async (request, response) => {
+  try {
+    const subjects = await getAllSubjects();
+    response.render('index', { subjects });
+  } catch (err) {
+    console.error(err);
+    response.status(500);
+    response.send('Error');
   }
 });
 
