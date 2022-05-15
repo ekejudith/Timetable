@@ -48,15 +48,16 @@ form {
 
 .list-item {
     font-size: 17px;
-    width: 16em;
-    height: 14em;
-    display: inline-block;
-    border-radius: 5%;
+    width: 15em;
+    height: fit-content;
     background-color: #04AA6D;
+    display: inline-block;
+    border-radius: 3%;
     box-sizing: border-box;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 70%);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 70%);
 
 }
+
 
 .subject-details {
     padding: 14px 16px;
@@ -78,3 +79,4 @@ th {
     text-align: left;
     padding: 8px;
 }
+

@@ -12,22 +12,38 @@
 <body>
     <nav class="topnav">
         <a href="/">Home</a>
-        <a href="subject">New subject</a>
-        <a href="file">Upload file</a>
+        <a href="/subject">New subject</a>
+        <a href="/file">Upload file</a>
         <a href="" class="active">Join subject</a>
     </nav>
     <div>
         <div>
-            <form action="/submit_student" method="post" enctype="multipart/form-data">
-                <p>Diak ID: <input type="text" name="studentID" value="<%=student.studentID %>" required></p>
-                <p>Nev: <input type="text" name="studentName" value="<%=student.studentName %>" required></p>
+            <form action="/student/submit" method="post" enctype="multipart/form-data">
+                <p>Diak ID: 
+                    <select name="studentID" id="studentID">
+                        <% students.forEach((student)=> { %>
+                            <option value="<%=student.studentID %>">
+                                <%=student.studentID %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </p>
+                <p>Nev: 
+                    <select name="studentName" id="studentName">
+                        <% students.forEach((student)=> { %>
+                            <option value="<%=student.studentName%>">
+                                <%=student.studentName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </p>
                 <p>Tantargy kodja:
                     <select name="subjectID" id="subjectID">
                         <% subjects.forEach((subject)=> { %>
                             <option value="<%=subject.subjectID %>">
                                 <%=subject.subjectID %>
                             </option>
-                            <% }) %>
+                        <% }) %>
                     </select>
                 <p>Tantargyhoz valo:
                     <select name="connection">

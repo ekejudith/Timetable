@@ -13,13 +13,13 @@
 <body>
     <nav class="topnav">
         <a href="/">Home</a>
-        <a href="subject">New subject</a>
+        <a href="/subject">New subject</a>
         <a href="" class="active">Upload file</a>
-        <a href="student">Join subject</a>
+        <a href="/student">Join subject</a>
     </nav>
     <div>
         <div>
-            <form action="/submit_file" method="post" enctype="multipart/form-data">
+            <form action="/file/submit" method="post" enctype="multipart/form-data">
                 <p>Tantargy kodja: <input type="text" name="subjectID" required /></p>
                 <p>Állomány: <input type="file" name="myfile" required /></p>
                 <p><input type="submit" value="Submit" /><%=error%></label></p>

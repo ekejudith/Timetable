@@ -13,12 +13,12 @@
     <nav class="topnav">
         <a href="/">Home</a>
         <a href="" class="active">New subject</a>
-        <a href="file">Upload file</a>
-        <a href="student">Join subject</a>
+        <a href="/file">Upload file</a>
+        <a href="/student">Join subject</a>
     </nav>
     <div>
         <div>
-            <form action="/submit_subject" method="post" id="form_tantargyak" enctype="multipart/form-data">
+            <form action="/subject/submit" method="post" id="form_tantargyak" enctype="multipart/form-data">
                 <p>Egyedi kod: <input type="text" name="subjectID" id="subjectID" value="<%=subject.subjectID %>"
                         required /></p>
                 <p>Nev: <input type="text" name="subjectName" id="subjectName" value="<%=subject.subjectName %>"
