@@ -1,7 +1,7 @@
 import dbConnection from './connection.js';
 
 export const insertFileOfSubject = (subjectID, filePath, fileName) => {
-  const query = 'Insert into FilesOfSubject values(?,?,?);';
+  const query = 'Insert into FilesOfSubject(subjectID, filePath, fileName) values(?,?,?);';
   return dbConnection.executeQuery(query, [subjectID, filePath, fileName]);
 };
 
@@ -22,4 +22,9 @@ export const isFileOfSubject = async (subject, file) => {
 export const getFilesOfSubject = (subjectID) => {
   const query = 'Select * from FilesOfSubject where subjectid = ? ';
   return dbConnection.executeQuery(query, [subjectID]);
+};
+
+export const deleteFileOfSubject = (id) => {
+  const query = 'Delete from FilesOfSubject where id = ?';
+  return dbConnection.executeQuery(query, [id]);
 };

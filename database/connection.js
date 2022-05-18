@@ -50,10 +50,11 @@ export const createTables = async () => {
 
     await dbConnection.executeQuery(`create table if not exists FilesOfSubject
     (
+    id int AUTO_INCREMENT,
     subjectID varchar(10),
     filePath varchar(255),
     fileName varchar(255),
-    primary key(subjectID,fileName),
+    primary key(id),
     foreign key(subjectID) references Subjects(subjectID)
     );`);
 

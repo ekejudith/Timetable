@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/main.css">
+
 </head>
 
 <body>
@@ -16,26 +17,35 @@
         <a href="/file">Upload file</a>
         <a href="/student">Join subject</a>
     </nav>
-    <div>
+    <div class="subjects">
         <% subjects.forEach((subject)=> { %>
-            <div class="list-item" id="<%=subject.subjectID%>">
-                <div class="list-item-subjectID"><a href="/subject/<%=subject.subjectID%>">
-                        <%=subject.subjectID%>
-                    </a></div>
-                <div class="list-item-subjectName">Nev: <%=subject.subjectName %>
+            <div class="list-item">
+                <div class="list-item-subjectID">
+                    <h3>
+                        <a href="/subject/<%=subject.subjectID%>">
+                            <%=subject.subjectID%>
+                        </a>
+                    </h3>
                 </div>
-                <div class="list-item-year">Evfolyam: <%= subject.year %>
+                <div onclick="showLinks(`<%=subject.subjectID%>`)">
+                    <div class="list-item-subjectName">Nev: <%=subject.subjectName %>
+                    </div>
+                    <div class="list-item-year">Evfolyam: <%= subject.year %>
+                    </div>
+                    <div class="list-item-course">Kurzusok szama: <%= subject.numberOfCourses %>
+                    </div>
+                    <div class="list-item-seminar">Szeminariumok szama: <%= subject.numberOfSeminars %>
+                    </div>
+                    <div class="list-item-lab">Laborok szama: <%= subject.numberOfLabs %>
+                    </div>
                 </div>
-                <div class="list-item-course">Kurzusok szama: <%= subject.numberOfCourses %>
-                </div>
-                <div class="list-item-seminar">Szeminariumok szama: <%= subject.numberOfSeminars %>
-                </div>
-                <div class="list-item-lab">Laborok szama: <%= subject.numberOfLabs %>
+                <div id="<%=subject.subjectID%>">
                 </div>
             </div>
-        <% }) %>
-    </div>
 
+            <% }) %>
+    </div>
+    <script src="/main.js"></script>
 </body>
 
 </html>

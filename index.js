@@ -6,6 +6,7 @@ import { getAllSubjects } from './database/subjects.js';
 import fileRouter from './routes/file.js';
 import studentRouter from './routes/student.js';
 import subjectRouter from './routes/subject.js';
+import apiRouter from './api/router.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(eformidable({ uploadDir }));
 
 app.set('view engine', 'ejs');
 
+app.use('/api', apiRouter);
 app.use('/file', fileRouter);
 app.use('/student', studentRouter);
 app.use('/subject', subjectRouter);
