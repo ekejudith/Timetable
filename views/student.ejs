@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diak</title>
+    <link rel="stylesheet" href="/main.css">
+
+</head>
+
+<body>
+    <nav class="topnav">
+        <a href="/">Home</a>
+        <a href="/subject">New subject</a>
+        <a href="/file">Upload file</a>
+        <a href="" class="active">Join subject</a>
+    </nav>
+    <div>
+        <div>
+            <form action="/student/submit" method="post" enctype="multipart/form-data">
+                <p>Diak ID: 
+                    <select name="studentID" id="studentID">
+                        <% students.forEach((student)=> { %>
+                            <option value="<%=student.studentID %>">
+                                <%=student.studentID %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </p>
+                <p>Nev: 
+                    <select name="studentName" id="studentName">
+                        <% students.forEach((student)=> { %>
+                            <option value="<%=student.studentName%>">
+                                <%=student.studentName %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </p>
+                <p>Tantargy kodja:
+                    <select name="subjectID" id="subjectID">
+                        <% subjects.forEach((subject)=> { %>
+                            <option value="<%=subject.subjectID %>">
+                                <%=subject.subjectID %>
+                            </option>
+                        <% }) %>
+                    </select>
+                <p>Tantargyhoz valo:
+                    <select name="connection">
+                        <option value="join">Csatlakozas</option>
+                        <option value="unjoin">Kilepes</option>
+                    </select>
+                </p>
+                <p>
+                    <input type="submit" value="Submit">
+                    <label>
+                        <%=error %>
+                    </label>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script src="/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tantárgyak</title>
+    <link rel="stylesheet" href="/main.css">
+
+</head>
+
+<body>
+    <nav class="topnav">
+        <a href="/" class="active">Home</a>
+        <a href="/subject">New subject</a>
+        <a href="/file">Upload file</a>
+        <a href="/student">Join subject</a>
+    </nav>
+    <div class="subject-details">
+        <div>
+            <h2>Tantárgy adatai:</h1>
+                <table>
+                    <tr>
+                        <th>Egyedi kod</th>
+                        <th>Nev</th>
+                        <th>Evfolyam</th>
+                        <th>Kurzusok szama</th>
+                        <th>Szeminariumok szama</th>
+                        <th>Laborok szama</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <%=subject.subjectName %>
+                        </td>
+                        <td>
+                            <%=subject.subjectID %>
+                        </td>
+                        <td>
+                            <%=subject.year %>
+                        </td>
+                        <td>
+                            <%=subject.numberOfCourses %>
+                        </td>
+                        <td>
+                            <%=subject.numberOfSeminars %>
+                        </td>
+                        <td>
+                            <%=subject.numberOfLabs %>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+        <div class="subject-files">
+            <h2>Fileok:</h2>
+            <% files.forEach((file)=> { %>
+                <p id="<%=file.id %>"><a href="/<%=file.filePath%>" download=<%=file.fileName%> >
+                        <%=file.fileName%>
+                    </a>
+                    <button class="deleteButton"
+                        onclick="deleteLink(`<%=file.id %>`)">delete</button>
+                </p>
+                <% }) %>
+        </div>
+        <div>
+            <h2>File feltöltés:</h2>
+            <form action="/file/submit/<%=subject.subjectID%>" method="post" enctype="multipart/form-data">
+                <p><input type="file" name="myfile" required /></p>
+                <p><input type="submit" value="Submit" /></p>
+            </form>
+        </div>
+    </div>
+    <script src="/main.js"></script>
+</body>
+
+</html>

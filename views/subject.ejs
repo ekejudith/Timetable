@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tantárgyak</title>
+    <link rel="stylesheet" href="/main.css">
+
+</head>
+
+<body>
+    <nav class="topnav">
+        <a href="/">Home</a>
+        <a href="" class="active">New subject</a>
+        <a href="/file">Upload file</a>
+        <a href="/student">Join subject</a>
+    </nav>
+    <div>
+        <div>
+            <form action="/subject/submit" method="post" id="form_tantargyak" enctype="multipart/form-data">
+                <p>Egyedi kod: <input type="text" name="subjectID" id="subjectID" value="<%=subject.subjectID %>"
+                        required /></p>
+                <p>Nev: <input type="text" name="subjectName" id="subjectName" value="<%=subject.subjectName %>"
+                        required onblur="nameValidator()" /></p>
+                <p>Evfolyam:
+                    <select name="year" id="year" value="<%=subject.year %>" required>
+                        <option value="2019-2022">2019-2022</option>
+                        <option value="2020-2023">2020-2023</option>
+                        <option value="2021-2024">2021-2024</option>
+                    </select>
+                </p>
+                <p>Kurzusok szama: <input type="number" name="course" id="course" value="<%=subject.course %>" required
+                        onblur="courseValidator()" /></p>
+                <p>Szeminariumok szama: <input type="number" name="seminar" id="seminar" value="<%=subject.seminar %>"
+                        required onblur="seminarValidator()" /></p>
+                <p>Laborok szama: <input type="number" name="lab" id="lab" value="<%=subject.lab %>" required
+                        onblur="labValidator()" /></p>
+                <p><input type="submit" value="Submit" required /> <label>
+                        <%=error %>
+                    </label> </p>
+            </form>
+        </div>
+    </div>
+    <script src="/main.js"></script>
+</body>
+
+</html>

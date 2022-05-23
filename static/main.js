@@ -47,3 +47,46 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
   }
 });
+
+const buttons = document.getElementsByClassName('deleteButton');
+console.log(buttons);
+
+// eslint-disable-next-line no-unused-vars
+async function deleteLink(fileId) {
+  const linkToDelete = document.getElementById(`${fileId}`);
+  try {
+    const result = await fetch(`/api/subject/${fileId}`, {
+      method: 'DELETE',
+    });
+    if (result.status === 200) {
+      linkToDelete.remove();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+// eslint-disable-next-line no-unused-vars
+async function showLinks(subjectID) {
+  try {
+    let body = '<h4>Files: </h4>';
+    const result = await fetch(`/api/${subjectID}`, { method: 'GET' });
+    const files = await result.json();
+    for (let i = 0; i < files.length; i += 1) {
+      const file = files[i];
+      body += `<div>
+      <a href="/${file.filePath}" download=${file.fileName}>
+          ${file.fileName}
+          </a>
+      </div>`;
+    }
+    body += `<button class="button" onclick="hideLinks('${subjectID}')">Hide files.</button>`;
+    document.getElementById(subjectID).innerHTML = body;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+function hideLinks(subjectID) {
+  document.getElementById(subjectID).innerText = '';
+}
