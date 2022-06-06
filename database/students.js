@@ -6,7 +6,7 @@ export const insertStudent = (student) => {
 };
 
 export const isStudent = async (student) => {
-  const query = 'select * from students where studentID = ? ;';
+  const query = 'select * from Students where studentID = ? ;';
   try {
     const value = await dbConnection.executeQuery(query, [student.studentID]);
     if (value.length === 0) {

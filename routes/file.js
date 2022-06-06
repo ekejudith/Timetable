@@ -32,14 +32,14 @@ router.post('/submit', async (request, response) => {
   if (file === '' || request.fields.subjectID === '') {
     error = 'Hibas bemeneti adatok!\n';
     response.status(406);
-    response.render('file', { student: request.fields, error });
+    response.render('file', { student: request.fields, error, username: request.session.username });
   } else {
     try {
       const issubject = await isSubject(request.fields);
       if (!issubject) {
         error = 'Hiba: Az adott tantargy nem letezik!\n';
         response.status(406);
-        response.render('file', { student: request.fields, error });
+        response.render('file', { student: request.fields, error, username: request.session.username });
       } else {
         const dirname = path.basename(path.dirname(file.path));
         const filename = path.basename(file.path);
@@ -55,7 +55,7 @@ router.post('/submit', async (request, response) => {
 });
 
 router.get('/', async (request, response) => {
-  response.render('file', { subject: request.fields, error: '' });
+  response.render('file', { subject: request.fields, error: '', username: request.session.username });
 });
 
 export default router;

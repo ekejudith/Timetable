@@ -7,44 +7,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/main.css">
-
+    <!-- <link rel="icon" type="image/x-icon" href="timetable.ico"> -->
 </head>
 
 <body>
     <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
         <a href="" class="active">Home</a>
         <a href="/subject">New subject</a>
-        <a href="/file">Upload file</a>
         <a href="/student">Join subject</a>
+
     </nav>
+    
     <div class="subjects">
+        <%- include('./partials/userInformation.ejs') %>
         <% subjects.forEach((subject)=> { %>
             <div class="list-item">
                 <div class="list-item-subjectID">
                     <h3>
                         <a href="/subject/<%=subject.subjectID%>">
-                            <%=subject.subjectID%>
+                           <ins><%=subject.subjectID%></ins> 
                         </a>
                     </h3>
                 </div>
                 <div onclick="showLinks(`<%=subject.subjectID%>`)">
-                    <div class="list-item-subjectName">Nev: <%=subject.subjectName %>
+                    <div class="list-item-subjectName"> <b>Név:</b> <%=subject.subjectName %>
                     </div>
-                    <div class="list-item-year">Evfolyam: <%= subject.year %>
+                    <div class="list-item-year"><b>Évfolyam:</b> <%= subject.year %>
                     </div>
-                    <div class="list-item-course">Kurzusok szama: <%= subject.numberOfCourses %>
+                    <div class="list-item-course"><b>Kurzusok száma:</b>  <%= subject.numberOfCourses %>
                     </div>
-                    <div class="list-item-seminar">Szeminariumok szama: <%= subject.numberOfSeminars %>
-                    </div>
-                    <div class="list-item-lab">Laborok szama: <%= subject.numberOfLabs %>
+                    <div class="list-item-seminar"><b>Szeminariumok száma:</b> <%= subject.numberOfSeminars %>
+                    </div> 
+                    <div class="list-item-lab"><b>Laborok száma:</b> <%= subject.numberOfLabs %>
                     </div>
                 </div>
-                <div id="<%=subject.subjectID%>">
-                </div>
+                <div id="<%=subject.subjectID%>"></div>
             </div>
 
             <% }) %>
     </div>
+    <%- include('./partials/footer.ejs') %>
     <script src="/main.js"></script>
 </body>
 

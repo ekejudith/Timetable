@@ -12,22 +12,24 @@
 
 <body>
     <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
         <a href="/" class="active">Home</a>
         <a href="/subject">New subject</a>
         <a href="/file">Upload file</a>
         <a href="/student">Join subject</a>
     </nav>
+    <%- include('./partials/userInformation.ejs') %>
     <div class="subject-details">
         <div>
             <h2>Tantárgy adatai:</h1>
                 <table>
                     <tr>
-                        <th>Egyedi kod</th>
-                        <th>Nev</th>
-                        <th>Evfolyam</th>
-                        <th>Kurzusok szama</th>
-                        <th>Szeminariumok szama</th>
-                        <th>Laborok szama</th>
+                        <th>Egyedi kód</th>
+                        <th>Név</th>
+                        <th>Évfolyam</th>
+                        <th>Kurzusok száma</th>
+                        <th>Szeminariumok száma</th>
+                        <th>Laborok száma</th>
                     </tr>
                     <tr>
                         <td>
@@ -53,7 +55,8 @@
         </div>
         <div class="subject-files">
             <h2>Fileok:</h2>
-            <% files.forEach((file)=> { %>
+            <% if(role==='admin' || username===subject.userID) { %>
+              <% files.forEach((file)=> { %>
                 <p id="<%=file.id %>"><a href="/<%=file.filePath%>" download=<%=file.fileName%> >
                         <%=file.fileName%>
                     </a>
@@ -61,15 +64,28 @@
                         onclick="deleteLink(`<%=file.id %>`)">delete</button>
                 </p>
                 <% }) %>
+            <% } else { %>
+                <% files.forEach((file)=> { %>
+                    <p id="<%=file.id %>">
+                        <a href="/<%=file.filePath%>" download=<%=file.fileName%> >
+                            <%=file.fileName%>
+                        </a>
+                    </p>
+             <% }) } %>
+
         </div>
         <div>
+            <% if(role==='admin' || username===subject.userID) { %>
             <h2>File feltöltés:</h2>
-            <form action="/file/submit/<%=subject.subjectID%>" method="post" enctype="multipart/form-data">
+            <form class="uploadForm" action="/file/submit/<%=subject.subjectID%>" method="post" enctype="multipart/form-data">
                 <p><input type="file" name="myfile" required /></p>
                 <p><input type="submit" value="Submit" /></p>
             </form>
+            <% } %>
         </div>
+        <%- include('./partials/popup.ejs') %> 
     </div>
+    <%- include('./partials/footer.ejs') %>
     <script src="/main.js"></script>
 </body>
 

@@ -37,15 +37,25 @@ export const createTables = async () => {
     primary key(studentID)
     );`);
 
+    await dbConnection.executeQuery(`create table if not exists User
+    (
+    userID varchar(255),
+    password varchar(255),
+    role  varchar(10) not null check(role in('user','admin')),
+    primary key(userID)
+    );`);
+
     await dbConnection.executeQuery(`create table if not exists Subjects
     ( 
     subjectID varchar(10),
     subjectName varchar(255),
-    year varchar(10),
+    year varchar(50),
     numberOfCourses int,
     numberOfSeminars int,
     numberOfLabs int,
-    primary key(subjectID)
+    userID varchar(255),
+    primary key(subjectID),
+    foreign key(userID) references User(userID)
     ) ;`);
 
     await dbConnection.executeQuery(`create table if not exists FilesOfSubject

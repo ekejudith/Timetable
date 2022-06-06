@@ -44,7 +44,8 @@ router.post('/submit', async (request, response) => {
     response.type('.html');
     let error = '';
 
-    if (request.fields.subjectID === '' || request.fields.studentID === '' || request.fields.studentName === '') {
+    if (request.fields.subjectID === undefined || request.fields.studentID === undefined
+      || request.fields.studentName === undefined) {
       error = 'Hibas bemeneti adatok!';
       response.status(406);
     } else if (!subject) {
@@ -61,7 +62,9 @@ router.post('/submit', async (request, response) => {
     const subjects = await getAllSubjects();
     const students = await getAllStudents();
     response.status(200);
-    response.render('student', { students, subjects, error });
+    response.render('student', {
+      students, subjects, error, username: request.session.username,
+    });
   } catch (err) {
     console.error(`Error: ${err}`);
     response.render('error', { error: 'Something went wrong!', status: 500 });
@@ -72,7 +75,9 @@ router.get('', async (request, response) => {
   try {
     const subjects = await getAllSubjects();
     const students = await getAllStudents();
-    response.render('student', { students, subjects, error: '' });
+    response.render('student', {
+      students, subjects, error: '', username: request.session.username,
+    });
   } catch (err) {
     console.error(`Error: ${err}`);
     response.render('error', { error: 'Something went wrong!', status: 500 });
