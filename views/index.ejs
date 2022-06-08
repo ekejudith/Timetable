@@ -7,25 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/main.css">
-    <!-- <link rel="icon" type="image/x-icon" href="timetable.ico"> -->
+    <script src="https://kit.fontawesome.com/57ff89206e.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body >
     <nav class="topnav">
-        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
-        <a href="" class="active">Home</a>
-        <a href="/subject">New subject</a>
-        <a href="/student">Join subject</a>
-
+        <% if (role=='guest') {  %>
+            <img src="/pictures/guest.png" alt="user" onclick="openUserInformations()">
+            <a href="#" class="active">Home</a>
+        <% } else { %>
+            <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+            <a href="#" class="active">Home</a>
+            <a href="/subject">New subject</a>
+            <a href="/student">Join subject</a>
+            <div class="subnav">
+                <button class="subnavbtn ">Timetables <i class="fa fa-caret-down"></i></button>
+                <%- include('./partials/subnav.ejs')%>
+            </div>
+        <% } %>
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } %>
     </nav>
     
     <div class="subjects">
         <%- include('./partials/userInformation.ejs') %>
         <% subjects.forEach((subject)=> { %>
+            <%if(role!='user' || subject.userID == username ){ %>
             <div class="list-item">
                 <div class="list-item-subjectID">
                     <h3>
-                        <a href="/subject/<%=subject.subjectID%>">
+                        <a href="/details/<%=subject.subjectID%>">
                            <ins><%=subject.subjectID%></ins> 
                         </a>
                     </h3>
@@ -45,7 +57,7 @@
                 <div id="<%=subject.subjectID%>"></div>
             </div>
 
-            <% }) %>
+            <% } }) %>
     </div>
     <%- include('./partials/footer.ejs') %>
     <script src="/main.js"></script>

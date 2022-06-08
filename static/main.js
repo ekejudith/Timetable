@@ -144,7 +144,7 @@ function closeUserInformations() {
 
 async function logout() {
   try {
-    const result = await fetch('/logout', {
+    const result = await fetch('/api/logout', {
       method: 'POST',
     });
     if (result.status === 200) {
@@ -153,4 +153,8 @@ async function logout() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function login() {
+  window.open('http://localhost:8080/login', '_self');
 }

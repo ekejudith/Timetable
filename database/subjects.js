@@ -18,9 +18,9 @@ export const deleteSubjectOfStudent = (subjectOfStudent) => {
 };
 
 export const isSubject = async (subject) => {
-  const query = 'select * from Subjects where subjectID = ? ;';
+  const query = 'select * from Subjects where subjectID = ? ';
   try {
-    const value = await dbConnection.executeQuery(query, [subject.subjectID]);
+    const value = await dbConnection.executeQuery(query, [subject]);
     if (value.length === 0) {
       return false;
     }
@@ -31,12 +31,12 @@ export const isSubject = async (subject) => {
   }
 };
 
-export const isSubjectOfStudent = async (subjectOfStudent) => {
+export const isSubjectOfStudent = async (subjectID, studentID) => {
   const query = 'select * from SubjectsOfStudent where subjectID = ? and studentID = ? ;';
   try {
     const value = await dbConnection.executeQuery(
       query,
-      [subjectOfStudent.subjectID, subjectOfStudent.studentID],
+      [subjectID, studentID],
     );
     if (value.length === 0) {
       return false;
@@ -51,6 +51,11 @@ export const isSubjectOfStudent = async (subjectOfStudent) => {
 export const getAllSubjects = () => {
   const query = 'Select * from Subjects';
   return dbConnection.executeQuery(query);
+};
+
+export const getSubjectsOfUser = (userID) => {
+  const query = 'Select * from Subjects where userID = ?';
+  return dbConnection.executeQuery(query, [userID]);
 };
 
 export const getSubject = async (subjectID) => {

@@ -3,7 +3,14 @@
     <button class="close" type="button" onclick="closeUserInformations()">╳</button>
     <br>
     <br>
-    <img src="/pictures/user.png" alt="ok">
-    <h4><%=username%></h4>
-    <button type="button" onclick="logout()">Log Out</button>
+    <% if(role=='guest') { %>
+        <img src="/pictures/guest.png" alt="guest">
+        <br>
+        <br>
+        <button type="button" onclick="login()">Log In</button>
+    <% } else { %>
+        <img src="/pictures/user.png" alt="user">
+        <h4><%=username%></h4>
+        <button type="button" onclick="logout()">Log Out</button>
+    <% } %>
 </div>

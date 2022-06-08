@@ -1,7 +1,8 @@
 import express from 'express';
 import { getAllStudents, isStudent } from '../database/students.js';
 import {
-  insertSubjectOfStudent, isSubject, isSubjectOfStudent, getAllSubjects, deleteSubjectOfStudent,
+  insertSubjectOfStudent, isSubject,
+  isSubjectOfStudent, getAllSubjects, deleteSubjectOfStudent, getSubjectsOfUser,
 } from '../database/subjects.js';
 
 const router = express.Router();
@@ -9,7 +10,10 @@ const router = express.Router();
 async function checkConnectionType(request, response) {
   let error = '';
   try {
-    const subjectOfStudent = await isSubjectOfStudent(request.fields);
+    const subjectOfStudent = await isSubjectOfStudent(
+      request.fields.subjectID,
+      request.fields.studentID,
+    );
 
     if (request.fields.connection === 'join') {
       if (!subjectOfStudent) {
@@ -17,7 +21,6 @@ async function checkConnectionType(request, response) {
         error = 'A csatlakozas sikeres volt!';
       } else {
         error = `${request.fields.studentID} mar csatlakozott a ${request.fields.subjectID} tantargyhoz!\n`;
-        response.status(304);
       }
     } else if (request.fields.connection === 'unjoin') {
       if (subjectOfStudent) {
@@ -25,45 +28,43 @@ async function checkConnectionType(request, response) {
         error = 'A kilepes sikeres volt!';
       } else {
         error = `${request.fields.studentID} nem resze a ${request.fields.subjectID} tantargynak!\n`;
-        response.status(304);
       }
     } else {
-      error = 'Hibas bemeneti adatok!';
-      response.status(400);
+      error = 'Hibas adatok!';
     }
-    return error;
   } catch (err) {
     response.render('error', { error: 'Something went wrong!', status: 500 });
   }
   return error;
 }
 
-router.post('/submit', async (request, response) => {
+router.post('/', async (request, response) => {
   try {
     const subject = await isSubject(request.fields);
     response.type('.html');
     let error = '';
 
-    if (request.fields.subjectID === undefined || request.fields.studentID === undefined
-      || request.fields.studentName === undefined) {
-      error = 'Hibas bemeneti adatok!';
-      response.status(406);
+    if (!request.fields.subjectID || !request.fields.studentID || !request.fields.studentName) {
+      error = 'Hibas adatok!';
     } else if (!subject) {
-      error = 'Hiba: Az adott tantargy nem letezik!';
-      response.status(406);
+      error = 'Az adott tantargy nem letezik!';
     } else {
       const student = await isStudent(request.fields);
       if (!student) {
-        error = 'Hiba: Az adott diak nem letezik!';
+        error = 'Az adott diak nem letezik!';
       } else {
         error = await checkConnectionType(request, response);
       }
     }
-    const subjects = await getAllSubjects();
+    let subjects = '';
+    if (request.session.role === 'admin') {
+      subjects = await getAllSubjects();
+    } else {
+      subjects = await getSubjectsOfUser(request.session.username);
+    }
     const students = await getAllStudents();
-    response.status(200);
     response.render('student', {
-      students, subjects, error, username: request.session.username,
+      students, subjects, error, username: request.session.username, role: request.session.role,
     });
   } catch (err) {
     console.error(`Error: ${err}`);
@@ -71,12 +72,17 @@ router.post('/submit', async (request, response) => {
   }
 });
 
-router.get('', async (request, response) => {
+router.get('/', async (request, response) => {
   try {
-    const subjects = await getAllSubjects();
+    let subjects = '';
+    if (request.session.role === 'admin') {
+      subjects = await getAllSubjects();
+    } else {
+      subjects = await getSubjectsOfUser(request.session.username);
+    }
     const students = await getAllStudents();
     response.render('student', {
-      students, subjects, error: '', username: request.session.username,
+      students, subjects, error: '', username: request.session.username, role: request.session.role,
     });
   } catch (err) {
     console.error(`Error: ${err}`);

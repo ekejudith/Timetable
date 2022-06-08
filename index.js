@@ -5,11 +5,18 @@ import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import eformidable from 'express-formidable';
 import { getAllSubjects } from './database/subjects.js';
-import fileRouter from './routes/file.js';
+import detailRouter from './routes/details.js';
 import studentRouter from './routes/student.js';
 import subjectRouter from './routes/subject.js';
 import apiRouter from './api/router.js';
-import { getPassword, getRole, insertUser } from './database/user.js';
+import signupRouter from './routes/signup.js';
+import timetableRouter from './routes/timetable.js';
+import {
+  getAllTeachers,
+  getPassword, getRole,
+} from './database/user.js';
+import { checkRole, isAdmin } from './auth/middleware.js';
+import { getAllGroups, getAllSubgroups } from './database/groups.js';
 
 const app = express();
 
@@ -32,15 +39,18 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
-app.get('/login', async (request, response) => {
-  response.render('login');
+app.get('/login', async (request, response, next) => {
+  if (request.session.username) {
+    next();
+  } else {
+    response.render('login');
+  }
 });
 
 app.post('/login', async (request, response) => {
   if (request.fields.email && request.fields.password) {
     try {
       const password = await getPassword(request.fields.email);
-      console.log(password);
       if (password) {
         const valid = await bcrypt.compare(request.fields.password, password);
         if (valid) {
@@ -48,6 +58,8 @@ app.post('/login', async (request, response) => {
           request.session.username = request.fields.email;
           request.session.role = role;
           response.redirect('/');
+        } else {
+          response.redirect('/login');
         }
       } else {
         response.redirect('/login');
@@ -59,46 +71,39 @@ app.post('/login', async (request, response) => {
   }
 });
 
-app.post('/logout', (requset, response) => {
-  requset.session.destroy((err) => {
-    if (err) {
-      response.status(400);
-    } else {
-      response.status(200);
-    }
-    response.send();
-  });
-});
-
-app.post('/signup', async (request, response) => {
-  if (request.fields.email && request.fields.password) {
-    try {
-      const password = bcrypt.hashSync(request.fields.password, 10);
-      await insertUser(request.fields.email, password, 'user');
-    } catch (err) {
-      console.error(err);
-      response.render('error', { error: 'Something went wrong!', status: 500 });
-    }
-  }
-});
-
 app.use((request, response, next) => {
   if (request.session.username) {
     next();
   } else {
-    response.redirect('/login');
+    request.session.role = 'guest';
+    next();
   }
 });
 
 app.use('/api', apiRouter);
-app.use('/file', fileRouter);
+app.use('/details', detailRouter);
+
+app.use('/signup', isAdmin);
+app.use('/signup', signupRouter);
+
+app.use(['/student', '/subject', '/timetable'], checkRole);
 app.use('/student', studentRouter);
 app.use('/subject', subjectRouter);
+app.use('/timetable', timetableRouter);
 
 app.use('/*', async (request, response) => {
   try {
-    const subjects = await getAllSubjects();
-    response.render('index', { subjects, username: request.session.username });
+    const [subjects, teachers, groups, subgroups] = await Promise.all([getAllSubjects(),
+      getAllTeachers(), getAllGroups(), getAllSubgroups()]);
+
+    response.render('index', {
+      subjects,
+      teachers,
+      groups,
+      subgroups,
+      username: request.session.username,
+      role: request.session.role,
+    });
   } catch (err) {
     console.error(err);
     response.render('error', { error: 'Something went wrong!', status: 500 });

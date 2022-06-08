@@ -14,38 +14,62 @@
     <nav class="topnav">
         <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
         <a href="/">Home</a>
-        <a href="" class="active">New subject</a>
+        <a href="#" class="active">New subject</a>
         <a href="/student">Join subject</a>
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } %>
+
     </nav>
-    <div>
-        <%- include('./partials/userInformation.ejs') %>
-        <div>
-            <form class="uploadForm" action="/subject/submit" method="post" id="form_tantargyak" enctype="multipart/form-data">
-                <p>Egyedi kod: <input type="text" name="subjectID" id="subjectID" value="<%=subject.subjectID %>"
-                        required /></p>
-                <p>Nev: <input type="text" name="subjectName" id="subjectName" value="<%=subject.subjectName %>"
-                        required onblur="nameValidator()" /></p>
-                <p>Evfolyam:
-                    <select name="year" id="year" value="<%=subject.year %>" required>
-                        <option value="2019-2022">2019-2022</option>
-                        <option value="2020-2023">2020-2023</option>
-                        <option value="2021-2024">2021-2024</option>
-                    </select>
-                </p>
-                <p>Kurzusok szama: <input type="number" name="course" id="course" value="<%=subject.course %>" required
-                        onblur="courseValidator()" /></p>
-                <p>Szeminariumok szama: <input type="number" name="seminar" id="seminar" value="<%=subject.seminar %>"
-                        required onblur="seminarValidator()" /></p>
-                <p>Laborok szama: <input type="number" name="lab" id="lab" value="<%=subject.lab %>" required
-                        onblur="labValidator()" /></p>
-                <p><input type="submit" value="Submit" required /> <label>
-                        <%=error %>
-                    </label> </p>
+
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="formContainer">
+        <div class="uploadForm">
+            <h3>Új fantárgy felvezetése</h3>
+            <form action="/subject" method="post" id="form_tantargyak" enctype="multipart/form-data">
+
+                <label for="subjectID">Egyedi kód: </label>
+                <br>
+                <input class="input" type="text" name="subjectID" id="subjectID" value="<%=subject.subjectID %>"
+                    required />
+                <br>
+                <label for="subjectName">Név:</label>
+                <br>
+                <input class="input" type="text" name="subjectName" id="subjectName" value="<%=subject.subjectName %>"
+                    required onblur="nameValidator()" />
+                <br>
+                <label for="year">Évfolyam:</label>
+                <br>
+                <select name="year" id="year" value="<%=subject.year%>" required>
+                    <% years.forEach((year)=> { %>
+                        <option value="<%=year.groupID%>"><%=year.groupID%></option>
+                    <% }) %>
+                </select>
+                <br>
+                <label for="course">Kurzusok száma:</label>
+                <br>
+                <input class="input" type="number" name="course" id="course" value="<%=subject.course %>" required
+                    onblur="courseValidator()" />
+                <br>
+                <label for="seminar">Szemináriumok száma:</label>
+                <br>
+                <input class="input" type="number" name="seminar" id="seminar" value="<%=subject.seminar %>" required
+                    onblur="seminarValidator()" />
+                <br>
+                <label for="lab">Laborok száma: </label>
+                <br>
+                <input class="input" type="number" name="lab" id="lab" value="<%=subject.lab %>" required
+                    onblur="labValidator()" />
+                <br>
+                <input type="submit" value="Submit" class="submit" />
+                <label style="color: red;">
+                    <%=error %>
+                </label>
             </form>
         </div>
     </div>
-    <%- include('./partials/footer.ejs') %>
-    <script src="/main.js"></script>
+        <%- include('./partials/footer.ejs') %>
+            <script src="/main.js"></script>
 </body>
 
 </html>
