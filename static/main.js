@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-unused-vars */
 function nameValidator() {
@@ -141,7 +142,7 @@ async function logout() {
       method: 'POST',
     });
     if (result.status === 200) {
-      window.open('http://localhost:8080/login', '_self');
+      window.open('/login', '_self');
     }
   } catch (error) {
     console.log(error);
@@ -149,7 +150,8 @@ async function logout() {
 }
 
 function login() {
-  window.open('http://localhost:8080/login', '_self');
+  console.log(this);
+  window.open('/login', '_self');
 }
 
 const scheduleForm = document.getElementById('schedule_form');
@@ -201,10 +203,10 @@ function adminInsert() {
       );
       if (response.status === 200) {
         openOkPopup('Accepted succesfully!');
+        table.deleteRow(rowId);
       } else {
         openErrorPopup('Cannot accept request!');
       }
-      rowSelected.style.backgroundColor = 'yellow';
     };
   }
 }
@@ -214,13 +216,9 @@ function adminDelete() {
   const buttonsReject = table.getElementsByClassName('reject');
   for (let i = 0; i < buttonsReject.length; i += 1) {
     const button = buttonsReject[i];
-    console.log(button);
     button.onclick =  async function () {
       const rowId = this.parentNode.parentNode.rowIndex;
-      console.log(rowId);
-
       const rowSelected = table.getElementsByTagName('tr')[rowId];
-      console.log(rowSelected.getElementsByTagName('td').innerHTML);
       const col = rowSelected.getElementsByTagName('td');
 
       const wish = {
@@ -245,6 +243,7 @@ function adminDelete() {
       );
       if (response.status === 200) {
         openOkPopup('Rejected succesfully!');
+        table.deleteRow(rowId);
       } else {
         openErrorPopup('Cannot reject request!');
       }
@@ -257,13 +256,10 @@ function userDelete() {
   const userButtons = table.getElementsByTagName('button');
   for (let i = 0; i < userButtons.length; i += 1) {
     const button = userButtons[i];
-    console.log(button);
     button.onclick = async function () {
       const rowId = this.parentNode.parentNode.rowIndex;
-      console.log(rowId);
 
       const rowSelected = table.getElementsByTagName('tr')[rowId];
-      console.log(rowSelected.getElementsByTagName('td').innerHTML);
       const col = rowSelected.getElementsByTagName('td');
 
       const wish = {
@@ -284,8 +280,20 @@ function userDelete() {
           },
         },
       );
+
       if (response.status === 200) {
-        openOkPopup('Added succesfully!');
+        openOkPopup('Added to wishlist succesfully!');
+        const row = document.getElementById('wishes').insertRow();
+        let cell = '';
+        for (let j = 0; j < 6; j += 1) {
+          cell = row.insertCell(j);
+          cell.innerText = col[j].innerText;
+        }
+        cell = row.insertCell(6);
+        cell.innerText = 'delete';
+        cell = row.insertCell(7);
+        cell.innerText = 'pending';
+        cell.setAttribute('class', 'pending');
       } else {
         openErrorPopup('Cannot add to wishlist!');
       }
