@@ -67,13 +67,6 @@ function closeOkPopup() {
   popup.classList.remove('open-okPopup');
 }
 
-const form = document.getElementById('form_tantargyak');
-form.addEventListener('submit', async (e) => {
-  if (!(nameValidator() && courseValidator() && seminarValidator() && labValidator())) {
-    e.preventDefault();
-  }
-});
-
 async function deleteLink(fileId) {
   const linkToDelete = document.getElementById(`${fileId}`);
   try {
@@ -158,3 +151,155 @@ async function logout() {
 function login() {
   window.open('http://localhost:8080/login', '_self');
 }
+
+const scheduleForm = document.getElementById('schedule_form');
+scheduleForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const myform = e.target;
+  const formData = new FormData(myform);
+
+  const resp = await fetch('/schedule/add ', { method: 'POST', body: formData });
+  if (resp.status === 200) {
+    openOkPopup('Added succesfully!');
+  } else {
+    openErrorPopup('Cannot add to timetable!');
+  }
+});
+
+function adminInsert() {
+  const table = document.getElementById('wishes');
+  const buttonsResolve = table.getElementsByClassName('resolve');
+
+  for (let i = 0; i < buttonsResolve.length; i += 1) {
+    const button = buttonsResolve[i];
+    button.onclick = async () => {
+      const rowId = this.parentNode.parentNode.rowIndex;
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+        status: col[7].id,
+        method: col[6].id,
+      };
+      console.log(wish);
+
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'POST',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+      if (response.status === 200) {
+        openOkPopup('Accepted succesfully!');
+      } else {
+        openErrorPopup('Cannot accept request!');
+      }
+      rowSelected.style.backgroundColor = 'yellow';
+    };
+  }
+}
+
+function adminDelete() {
+  const table = document.getElementById('wishes');
+  const buttonsReject = table.getElementsByClassName('reject');
+  for (let i = 0; i < buttonsReject.length; i += 1) {
+    const button = buttonsReject[i];
+    console.log(button);
+    button.onclick = async () => {
+      const rowId = this.parentNode.parentNode.rowIndex;
+      console.log(rowId);
+
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      console.log(rowSelected.getElementsByTagName('td').innerHTML);
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+        status: col[7].id,
+        method: col[6].id,
+      };
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'Delete',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+      if (response.status === 200) {
+        openOkPopup('Rejected succesfully!');
+      } else {
+        openErrorPopup('Cannot reject request!');
+      }
+    };
+  }
+}
+
+function userDelete() {
+  const table = document.getElementById('timetable');
+  const userButtons = table.getElementsByTagName('button');
+  for (let i = 0; i < userButtons.length; i += 1) {
+    const button = userButtons[i];
+    console.log(button);
+    button.onclick = async () => {
+      const rowId = this.parentNode.parentNode.rowIndex;
+      console.log(rowId);
+
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      console.log(rowSelected.getElementsByTagName('td').innerHTML);
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+      };
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'Delete',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+      if (response.status === 200) {
+        openOkPopup('Request added succesfully!');
+      } else {
+        openErrorPopup('Cannot add request!');
+      }
+    };
+  }
+}
+
+adminInsert();
+adminDelete();
+userDelete();
+
+const form = document.getElementById('form_tantargyak');
+form.addEventListener('submit', async (e) => {
+  if (!(nameValidator() && courseValidator() && seminarValidator() && labValidator())) {
+    e.preventDefault();
+  }
+});

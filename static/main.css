@@ -480,23 +480,24 @@ table {
     border-radius: 5px;
 }
 
-.timetable,.schedule {
+.timetable,.schedule ,.wishes{
     padding: 14px 16px;
     font-size: 17px;
     margin: auto;
     width: 70%;
-    min-height: 90vh;
 }
 
 
-.timetable th , .schedule th{
+.timetable th , .schedule th, .wishes th{
     background-color: #04aa6d;
     padding: 8px;
 }
 
 .timetable th,
 .timetable td,
-.schedule th {
+.schedule th,
+.wishes th,
+.wishes td {
     border: 1px solid #333;
     text-align: left;
     min-width: 100px;
@@ -527,7 +528,7 @@ table {
 
 }
 
-.timetable h3 , .schedule h3{
+.timetable h3 , .schedule h3, .wishes h3{
     padding-top: 15px;
     text-align: center;
 }
@@ -547,4 +548,24 @@ table {
 
 .list-item-subjectID {
     width: auto;
+}
+
+td.pending {
+    background-color: #ffe438d1;
+    font-style:oblique ;
+}
+
+td.rejected {
+    background-color: rgba(255, 0, 0, 0.647);
+    font-style:oblique ;
+}
+
+td.approved {
+    background-color: #53b330aa ;
+    font-style:oblique ;
+}
+
+.wishes tr:hover{
+    cursor: pointer;
+    background-color: lightblue;
 }

@@ -83,15 +83,15 @@ app.use((request, response, next) => {
 
 app.use('/api', apiRouter);
 app.use('/details', detailRouter);
-app.use('/schedule', scheduleRouter);
 
 app.use('/signup', isAdmin);
 app.use('/signup', signupRouter);
 
-app.use(['/student', '/subject', '/timetable'], checkRole);
+app.use(['/student', '/subject', '/timetable', '/schedule'], checkRole);
 app.use('/student', studentRouter);
 app.use('/subject', subjectRouter);
 app.use('/timetable', timetableRouter);
+app.use('/schedule', scheduleRouter);
 
 app.use('/*', async (request, response) => {
   try {
