@@ -19,6 +19,7 @@
         <a href="/student">Join subject</a>
         <a href="#" class="active">Schedule</a>
         <% if(role=='admin' ){ %>
+            <a href="/teacher" >Add teacher</a>
             <a href="/signup">Sign up</a>
             <% } else { %>
                 <a href="/timetable/teacher/<%=username%>">Timetable</a>

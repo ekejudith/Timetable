@@ -64,27 +64,32 @@ router.get('/group/:id', async (request, response) => {
 
 router.use('/subgroup/:id', isAdmin);
 router.get('/subgroup/:id', async (request, response) => {
-  const issubgroup = await isSubGroup(request.params.id);
+  try {
+    const issubgroup = await isSubGroup(request.params.id);
 
-  if (issubgroup) {
-    const lines = await getTimetableOfSubgroup(request.params.id);
+    if (issubgroup) {
+      const lines = await getTimetableOfSubgroup(request.params.id);
 
-    const [subjects, teachers, groups, subgroups] = await Promise.all([getAllSubjects(),
-      getAllTeachers(), getAllGroups(), getAllSubgroups()]);
+      const [subjects, teachers, groups, subgroups] = await Promise.all([getAllSubjects(),
+        getAllTeachers(), getAllGroups(), getAllSubgroups()]);
 
-    response.render('timetable', {
-      role: request.session.role,
-      username: request.session.username,
-      type: 'Alcsoport',
-      name: request.params.id,
-      lines,
-      subjects,
-      teachers,
-      groups,
-      subgroups,
-    });
-  } else {
-    response.redirect('/');
+      response.render('timetable', {
+        role: request.session.role,
+        username: request.session.username,
+        type: 'Alcsoport',
+        name: request.params.id,
+        lines,
+        subjects,
+        teachers,
+        groups,
+        subgroups,
+      });
+    } else {
+      response.redirect('/');
+    }
+  } catch (err) {
+    console.error(err);
+    response.render('error', { error: 'Something went wrong!', status: 500 });
   }
 });
 
@@ -99,26 +104,31 @@ router.get('/teacher/:id', async (request, response, next) => {
 });
 
 router.get('/teacher/:id', async (request, response) => {
-  const isteacher = await isTeacher(request.params.id);
-  if (isteacher) {
-    const lines = await getTimetableOfTeacher(request.params.id);
+  try {
+    const isteacher = await isTeacher(request.params.id);
+    if (isteacher) {
+      const lines = await getTimetableOfTeacher(request.params.id);
 
-    const [subjects, teachers, groups, subgroups] = await Promise.all([getAllSubjects(),
-      getAllTeachers(), getAllGroups(), getAllSubgroups()]);
+      const [subjects, teachers, groups, subgroups] = await Promise.all([getAllSubjects(),
+        getAllTeachers(), getAllGroups(), getAllSubgroups()]);
 
-    response.render('timetable', {
-      role: request.session.role,
-      username: request.session.username,
-      type: 'Tanár',
-      name: request.params.id,
-      lines,
-      subjects,
-      teachers,
-      groups,
-      subgroups,
-    });
-  } else {
-    response.redirect('/');
+      response.render('timetable', {
+        role: request.session.role,
+        username: request.session.username,
+        type: 'Tanár',
+        name: request.params.id,
+        lines,
+        subjects,
+        teachers,
+        groups,
+        subgroups,
+      });
+    } else {
+      response.redirect('/');
+    }
+  } catch (err) {
+    console.error(err);
+    response.render('error', { error: 'Something went wrong!', status: 500 });
   }
 });
 

@@ -15,6 +15,7 @@ import signupRouter from './routes/signup.js';
 import timetableRouter from './routes/timetable.js';
 import scheduleRouter from './routes/schedule.js';
 import loginRouter from './routes/login.js';
+import teacherRouter from './routes/teacher.js';
 
 const app = express();
 
@@ -57,8 +58,9 @@ app.use('/subject', subjectRouter);
 app.use('/timetable', timetableRouter);
 app.use('/schedule', scheduleRouter);
 
-app.use('/signup', isAdmin);
+app.use(['/signup', '/teacher'], isAdmin);
 app.use('/signup', signupRouter);
+app.use('/teacher', teacherRouter);
 
 app.use('/*', async (request, response) => {
   try {

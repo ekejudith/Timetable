@@ -40,7 +40,7 @@ async function checkConnectionType(request, response) {
 
 router.post('/', async (request, response) => {
   try {
-    const subject = await isSubject(request.fields);
+    const subject = await isSubject(request.fields.subjectID);
     response.type('.html');
     let error = '';
 

@@ -48,12 +48,12 @@ export const isSubjectOfStudent = async (subjectID, studentID) => {
   }
 };
 
-export const getAllSubjects = () => {
+export const getAllSubjects = async () => {
   const query = 'Select * from Subjects';
   return dbConnection.executeQuery(query);
 };
 
-export const getSubjectsOfUser = (userID) => {
+export const getSubjectsOfUser = async (userID) => {
   const query = 'Select * from Subjects where userID = ?';
   return dbConnection.executeQuery(query, [userID]);
 };
@@ -63,6 +63,24 @@ export const getSubject = async (subjectID) => {
   try {
     const value = await dbConnection.executeQuery(query, [subjectID]);
     return value[0];
+  } catch (err) {
+    console.error(`Query error: ${err}`);
+    return false;
+  }
+};
+
+export const updateUserOfSubject = async (subjectID, userID) => {
+  const query = 'Update Subjects set userID = ? WHERE subjectID = ?';
+  return dbConnection.executeQuery(query, [userID, subjectID]);
+};
+
+export const getUserOfSubject = async (subjectID) => {
+  const query = `Select name from Subjects 
+  join Users on Users.userID = Subjects.userID
+  where subjectID = ?`;
+  try {
+    const value = await dbConnection.executeQuery(query, [subjectID]);
+    return value[0].name;
   } catch (err) {
     console.error(`Query error: ${err}`);
     return false;

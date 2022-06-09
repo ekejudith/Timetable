@@ -68,15 +68,15 @@ router.delete('/wish', async (request, response) => {
 
 router.post('/add', async (request, response, next) => {
   if (request.session.role === 'user') {
-    const valid = await isValid(request.fields);
-    if (valid) {
-      try {
+    try {
+      const valid = await isValid(request.fields);
+      if (valid) {
         await insertIntoWishes(request.fields, 'insert', 'pending');
         response.status(200);
-      } catch (err) {
+      } else {
         response.status(400);
       }
-    } else {
+    } catch (err) {
       response.status(400);
     }
     response.send();
@@ -86,28 +86,53 @@ router.post('/add', async (request, response, next) => {
 });
 
 router.post('/add', async (request, response) => {
-  const valid = await isValid(request.fields);
-  if (valid) {
-    try {
+  try {
+    const valid = await isValid(request.fields);
+    if (valid) {
       await insertIntoTimetable(request.fields);
       response.status(200);
-    } catch (err) {
+    } else {
       response.status(400);
     }
-  } else {
+  } catch (err) {
     response.status(400);
   }
   response.send();
 });
 
 router.get('/', async (request, response, next) => {
-  if (request.session.role === 'user') {
-    const [subjects, years] = await Promise.all(
-      [getSubjectsOfUser(request.session.username), getAllSubgroups()],
-    );
-    const [lines, wishes] = await Promise.all([getTimetableOfTeacher(request.session.username),
-      getWishesOfTeacher(request.session.username)]);
-    const teachers = request.session.username;
+  try {
+    if (request.session.role === 'user') {
+      const [subjects, years] = await Promise.all(
+        [getSubjectsOfUser(request.session.username), getAllSubgroups()],
+      );
+      const [lines, wishes] = await Promise.all([getTimetableOfTeacher(request.session.username),
+        getWishesOfTeacher(request.session.username)]);
+      const teachers = request.session.username;
+
+      response.render('schedule', {
+        role: request.session.role,
+        username: request.session.username,
+        years,
+        subjects,
+        teachers,
+        lines,
+        wishes,
+      });
+    } else {
+      next();
+    }
+  } catch (err) {
+    console.error(err);
+    response.render('error', { error: 'Something went wrong!', status: 500 });
+  }
+});
+
+router.get('/', async (request, response) => {
+  try {
+    const [subjects, teachers, years] = await Promise.all([getAllSubjects(),
+      getAllTeachers(), getAllSubgroups()]);
+    const wishes = await getAllWishes();
 
     response.render('schedule', {
       role: request.session.role,
@@ -115,27 +140,12 @@ router.get('/', async (request, response, next) => {
       years,
       subjects,
       teachers,
-      lines,
       wishes,
     });
-  } else {
-    next();
+  } catch (err) {
+    console.error(err);
+    response.render('error', { error: 'Something went wrong!', status: 500 });
   }
-});
-
-router.get('/', async (request, response) => {
-  const [subjects, teachers, years] = await Promise.all([getAllSubjects(),
-    getAllTeachers(), getAllSubgroups()]);
-  const wishes = await getAllWishes();
-
-  response.render('schedule', {
-    role: request.session.role,
-    username: request.session.username,
-    years,
-    subjects,
-    teachers,
-    wishes,
-  });
 });
 
 export default router;
