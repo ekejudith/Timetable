@@ -141,7 +141,7 @@ async function logout() {
       method: 'POST',
     });
     if (result.status === 200) {
-      window.open('http://localhost:8080/', '_self');
+      window.open('http://localhost:8080/login', '_self');
     }
   } catch (error) {
     console.log(error);
@@ -172,7 +172,7 @@ function adminInsert() {
 
   for (let i = 0; i < buttonsResolve.length; i += 1) {
     const button = buttonsResolve[i];
-    button.onclick = async () => {
+    button.onclick =  async function () {
       const rowId = this.parentNode.parentNode.rowIndex;
       const rowSelected = table.getElementsByTagName('tr')[rowId];
       const col = rowSelected.getElementsByTagName('td');
@@ -215,7 +215,7 @@ function adminDelete() {
   for (let i = 0; i < buttonsReject.length; i += 1) {
     const button = buttonsReject[i];
     console.log(button);
-    button.onclick = async () => {
+    button.onclick =  async function () {
       const rowId = this.parentNode.parentNode.rowIndex;
       console.log(rowId);
 
@@ -258,7 +258,7 @@ function userDelete() {
   for (let i = 0; i < userButtons.length; i += 1) {
     const button = userButtons[i];
     console.log(button);
-    button.onclick = async () => {
+    button.onclick = async function () {
       const rowId = this.parentNode.parentNode.rowIndex;
       console.log(rowId);
 
@@ -285,9 +285,9 @@ function userDelete() {
         },
       );
       if (response.status === 200) {
-        openOkPopup('Request added succesfully!');
+        openOkPopup('Added succesfully!');
       } else {
-        openErrorPopup('Cannot add request!');
+        openErrorPopup('Cannot add to wishlist!');
       }
     };
   }

@@ -1,9 +1,9 @@
 import dbConnection from './connection.js';
 
-export const isUser = async (userID, password) => {
-  const query = 'Select role from Users where userID = ? and password=?';
+export const isUser = async (userID) => {
+  const query = 'Select * from Users where userID = ? ';
   try {
-    const value = await dbConnection.executeQuery(query, [userID, password]);
+    const value = await dbConnection.executeQuery(query, [userID]);
     return value[0];
   } catch (err) {
     console.error(`Query error: ${err}`);

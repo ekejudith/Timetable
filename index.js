@@ -13,8 +13,7 @@ import signupRouter from './routes/signup.js';
 import timetableRouter from './routes/timetable.js';
 import scheduleRouter from './routes/schedule.js';
 import {
-  getAllTeachers,
-  getPassword, getRole,
+  getAllTeachers, getPassword, getRole, isUser,
 } from './database/users.js';
 import { checkRole, isAdmin } from './auth/middleware.js';
 import { getAllGroups, getAllSubgroups } from './database/groups.js';
@@ -51,14 +50,19 @@ app.get('/login', async (request, response, next) => {
 app.post('/login', async (request, response) => {
   if (request.fields.email && request.fields.password) {
     try {
-      const password = await getPassword(request.fields.email);
-      if (password) {
-        const valid = await bcrypt.compare(request.fields.password, password);
-        if (valid) {
-          const role = await getRole(request.fields.email);
-          request.session.username = request.fields.email;
-          request.session.role = role;
-          response.redirect('/');
+      const user = await isUser(request.fields.email);
+      if (user) {
+        const password = await getPassword(request.fields.email);
+        if (password) {
+          const valid = bcrypt.compare(request.fields.password, password);
+          if (valid) {
+            const role = await getRole(request.fields.email);
+            request.session.username = request.fields.email;
+            request.session.role = role;
+            response.redirect('/');
+          } else {
+            response.redirect('/login');
+          }
         } else {
           response.redirect('/login');
         }
@@ -84,14 +88,14 @@ app.use((request, response, next) => {
 app.use('/api', apiRouter);
 app.use('/details', detailRouter);
 
-app.use('/signup', isAdmin);
-app.use('/signup', signupRouter);
-
 app.use(['/student', '/subject', '/timetable', '/schedule'], checkRole);
 app.use('/student', studentRouter);
 app.use('/subject', subjectRouter);
 app.use('/timetable', timetableRouter);
 app.use('/schedule', scheduleRouter);
+
+app.use('/signup', isAdmin);
+app.use('/signup', signupRouter);
 
 app.use('/*', async (request, response) => {
   try {
