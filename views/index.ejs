@@ -19,15 +19,19 @@
             <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
             <a href="#" class="active">Home</a>
             <a href="/subject">New subject</a>
-            <a href="/student">Join subject</a>
+            <a href="/student">Join subject</a>  
+            <a href="/schedule">Schedule</a>    
+        <% } %>
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
             <div class="subnav">
                 <button class="subnavbtn ">Timetables <i class="fa fa-caret-down"></i></button>
                 <%- include('./partials/subnav.ejs')%>
             </div>
+        <% } else if ( role=='user') { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
         <% } %>
-        <% if(role=='admin'){ %>
-            <a href="/signup">Sign up</a>
-        <% } %>
+
     </nav>
     
     <div class="subjects">
@@ -36,23 +40,35 @@
             <%if(role!='user' || subject.userID == username ){ %>
             <div class="list-item">
                 <div class="list-item-subjectID">
-                    <h3>
+                    <h3> 
                         <a href="/details/<%=subject.subjectID%>">
-                           <ins><%=subject.subjectID%></ins> 
+                            <i class="fa-solid fa-book"></i> <%=subject.subjectID%> 
                         </a>
                     </h3>
                 </div>
-                <div onclick="showLinks(`<%=subject.subjectID%>`)">
-                    <div class="list-item-subjectName"> <b>Név:</b> <%=subject.subjectName %>
-                    </div>
-                    <div class="list-item-year"><b>Évfolyam:</b> <%= subject.year %>
-                    </div>
-                    <div class="list-item-course"><b>Kurzusok száma:</b>  <%= subject.numberOfCourses %>
-                    </div>
-                    <div class="list-item-seminar"><b>Szeminariumok száma:</b> <%= subject.numberOfSeminars %>
-                    </div> 
-                    <div class="list-item-lab"><b>Laborok száma:</b> <%= subject.numberOfLabs %>
-                    </div>
+                <div class="list-item-table" onclick="showLinks(`<%=subject.subjectID%>`)">
+                    <table>
+                        <tr>
+                            <td> <b>Név:</b></td>
+                            <td>  <%=subject.subjectName %></td>
+                        </tr>
+                        <tr>
+                            <td><b>Évfolyam:</b></td>
+                            <td><%= subject.year %></td>
+                        </tr>
+                        <tr>
+                            <td> <b>Kurzusok:</b></td>
+                            <td><%= subject.numberOfCourses %></td>
+                        </tr>
+                        <tr>
+                            <td><b>Szeminariumok:</b></td>
+                            <td><%= subject.numberOfSeminars %></td>
+                        </tr>
+                        <tr>
+                            <td><b>Laborok:</b></td>
+                            <td> <%= subject.numberOfLabs %></td>
+                        </tr>
+                    </table>
                 </div>
                 <div id="<%=subject.subjectID%>"></div>
             </div>

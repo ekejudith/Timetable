@@ -1,4 +1,5 @@
 import express from 'express';
+import { isAdmin } from '../auth/middleware.js';
 import {
   getAllGroups, getAllSubgroups, isGroup, isSubGroup,
 } from '../database/groups.js';
@@ -6,13 +7,13 @@ import { getAllSubjects, isSubject } from '../database/subjects.js';
 import {
   getTimetableOfGroup, getTimetableOfSubgroup, getTimetableOfSubject, getTimetableOfTeacher,
 } from '../database/timetable.js';
-import { getAllTeachers, isTeacher } from '../database/user.js';
+import { getAllTeachers, isTeacher } from '../database/users.js';
 
 const router = express.Router();
 
+router.use('/subject/:id', isAdmin);
 router.get('/subject/:id', async (request, response) => {
   const issubject = await isSubject(request.params.id);
-  console.log(issubject);
 
   if (issubject) {
     const lines = await getTimetableOfSubject(request.params.id);
@@ -22,6 +23,7 @@ router.get('/subject/:id', async (request, response) => {
 
     response.render('timetable', {
       role: request.session.role,
+      username: request.session.username,
       type: 'Tantargy',
       name: request.params.id,
       lines,
@@ -35,6 +37,7 @@ router.get('/subject/:id', async (request, response) => {
   }
 });
 
+router.use('/group/:id', isAdmin);
 router.get('/group/:id', async (request, response) => {
   const isgroup = await isGroup(request.params.id);
   if (isgroup) {
@@ -45,6 +48,7 @@ router.get('/group/:id', async (request, response) => {
 
     response.render('timetable', {
       role: request.session.role,
+      username: request.session.username,
       type: 'Csoport',
       name: request.params.id,
       lines,
@@ -58,6 +62,7 @@ router.get('/group/:id', async (request, response) => {
   }
 });
 
+router.use('/subgroup/:id', isAdmin);
 router.get('/subgroup/:id', async (request, response) => {
   const issubgroup = await isSubGroup(request.params.id);
 
@@ -69,6 +74,7 @@ router.get('/subgroup/:id', async (request, response) => {
 
     response.render('timetable', {
       role: request.session.role,
+      username: request.session.username,
       type: 'Alcsoport',
       name: request.params.id,
       lines,
@@ -77,6 +83,16 @@ router.get('/subgroup/:id', async (request, response) => {
       groups,
       subgroups,
     });
+  } else {
+    response.redirect('/');
+  }
+});
+
+router.get('/teacher/:id', async (request, response, next) => {
+  if (request.session.role === 'admin') {
+    next();
+  } else if (request.params.id === request.session.username) {
+    next();
   } else {
     response.redirect('/');
   }
@@ -92,6 +108,7 @@ router.get('/teacher/:id', async (request, response) => {
 
     response.render('timetable', {
       role: request.session.role,
+      username: request.session.username,
       type: 'Tanár',
       name: request.params.id,
       lines,

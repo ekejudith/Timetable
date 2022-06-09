@@ -32,8 +32,9 @@ export const getTimetableOfSubgroup = async (subgroupID) => {
   join StudentGroups as sg on sg.subgroupID=t.subgroupID
   join DaysOfWeek as d on d.dayName = t.day
   where sg.subgroupID = ?
+  or sg.subgroupID = (select groupID from StudentGroups where subgroupID = ? )
   order by d.dayID; `;
-  return dbConnection.executeQuery(query, [subgroupID]);
+  return dbConnection.executeQuery(query, [subgroupID, subgroupID]);
 };
 
 export const getTimetableOfGroup = async (groupID) => {

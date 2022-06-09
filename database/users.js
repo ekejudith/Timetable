@@ -64,6 +64,6 @@ export const getUser = async (userID) => {
 };
 
 export const getAllTeachers = async () => {
-  const query = 'select * from Users where role = "user"';
+  const query = 'select * from Users where role = "user" order by name';
   return dbConnection.executeQuery(query);
 };

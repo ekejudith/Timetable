@@ -20,10 +20,14 @@
             <a href="/" class="active">Home</a>
             <a href="/subject">New subject</a>
             <a href="/student">Join subject</a>
+            <a href="/schedule">Schedule</a> 
         <% } %>
         <% if(role=='admin'){ %>
             <a href="/signup">Sign up</a>
         <% } %>
+        <% if(role=='user'){ %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>   
     </nav>
     <%- include('./partials/userInformation.ejs') %>
     <div class="subject-details">

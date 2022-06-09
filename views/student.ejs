@@ -15,9 +15,12 @@
         <a href="/">Home</a>
         <a href="/subject">New subject</a>
         <a href="#" class="active">Join subject</a>
+        <a href="/schedule">Schedule</a> 
         <% if(role=='admin'){ %>
             <a href="/signup">Sign up</a>
-        <% } %>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>   
     </nav>
     <%- include('./partials/userInformation.ejs') %>
     <div class="formContainer">

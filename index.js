@@ -11,10 +11,11 @@ import subjectRouter from './routes/subject.js';
 import apiRouter from './api/router.js';
 import signupRouter from './routes/signup.js';
 import timetableRouter from './routes/timetable.js';
+import scheduleRouter from './routes/schedule.js';
 import {
   getAllTeachers,
   getPassword, getRole,
-} from './database/user.js';
+} from './database/users.js';
 import { checkRole, isAdmin } from './auth/middleware.js';
 import { getAllGroups, getAllSubgroups } from './database/groups.js';
 
@@ -82,6 +83,7 @@ app.use((request, response, next) => {
 
 app.use('/api', apiRouter);
 app.use('/details', detailRouter);
+app.use('/schedule', scheduleRouter);
 
 app.use('/signup', isAdmin);
 app.use('/signup', signupRouter);

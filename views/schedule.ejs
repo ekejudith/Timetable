@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/main.css">
 </head>
+
 <body>
-    <h3>Interaktiv felulet</h3>
+    <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+        <a href="/">Home</a>
+        <a href="/subject" >New subject</a>
+        <a href="/student">Join subject</a>
+        <a href="#" class="active">Schedule</a> 
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>    
+    </nav>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="scheduleContainer">
+        <div class="schedule">
+            <h3>Interaktiv felulet</h3>
             <table>
                 <tr>
                     <th>Nap</th>
@@ -15,6 +33,7 @@
                     <th>Évfolyam</th>
                     <th>Tipus</th>
                     <th>Tantárgy</th>
+                    <th>Tanár</th>
                 </tr>
                 <tr>
                     <td>
@@ -28,7 +47,7 @@
                         </select>
                     </td>
                     <td>
-                        <select name="day" id="day">
+                        <select name="hour" id="hour">
                             <option value="08:00 - 10:00">08:00 - 10:00</option>
                             <option value="10:00 - 12:00">10:00 - 12:00</option>
                             <option value="12:00 - 14:00">12:00 - 14:00</option>
@@ -41,7 +60,7 @@
                         <select name="year" id="year">
                             <% years.forEach((year)=> { %>
                                 <option value="<%=year.groupID%>">
-                                    <%=year.groupID%>
+                                    <%=year.subgroupID%>
                                 </option>
                                 <% }) %>
                         </select>
@@ -62,7 +81,21 @@
                                 <% }) %>
                         </select>
                     </td>
+                    <td>
+                        <select name="teacher" id="teacher">
+                            <% teachers.forEach((teacher)=> { %>
+                                <option value="<%=teacher.userID%>">
+                                    <%=teacher.name%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </td>
                 </tr>
             </table>
+        </div>
+    </div>
+    <%- include('./partials/footer.ejs') %>
+    <script src="/main.js"></script>
 </body>
+
 </html>

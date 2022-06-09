@@ -17,15 +17,20 @@
         <a href="/">Home</a>
         <a href="/subject" >New subject</a>
         <a href="/student">Join subject</a>
-        <div class="subnav">
-            <button class="subnavbtn active">Timetables <i class="fa fa-caret-down"></i></button>
-            <%- include('./partials/subnav.ejs')%>
-        </div>
+        <a href="/schedule">Schedule</a> 
         <% if(role=='admin'){ %>
             <a href="/signup">Sign up</a>
-        <% } %>
+            <div class="subnav">
+                <button class="subnavbtn active">Timetables <i class="fa fa-caret-down"></i></button>
+                <%- include('./partials/subnav.ejs')%>
+            </div>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>" class="active">Timetable</a>
+        <% }%>
+
 
     </nav>
+    <%- include('./partials/userInformation.ejs') %>
     <div class="timetableContainter">
         <div class="timetable">
             <h3>
