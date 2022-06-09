@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable</title>
+    <link rel="stylesheet" href="/main.css">
+    <script src="https://kit.fontawesome.com/57ff89206e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="topnav">
+
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+        <a href="/">Home</a>
+        <a href="/subject" >New subject</a>
+        <a href="/student">Join subject</a>
+        <a href="/schedule">Schedule</a> 
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+            <div class="subnav">
+                <button class="subnavbtn active">Timetables <i class="fa fa-caret-down"></i></button>
+                <%- include('./partials/subnav.ejs')%>
+            </div>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>" class="active">Timetable</a>
+        <% }%>
+
+
+    </nav>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="timetableContainter">
+        <div class="timetable">
+            <h3>
+                <%=type%> : <%=name%>
+            </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nap</th>
+                        <th>Óra</th>
+                        <th>Évfolyam</th>
+                        <th>Tipus</th>
+                        <th>Tantárgy</th>
+                        <th>Tanár</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% lines.forEach((line)=> { %>
+                        <tr>
+                            <td>
+                                <%=line.day%>
+                            </td>
+                            <td>
+                                <%=line.hour%>
+                            </td>
+                            <td>
+                                <%=line.subgroupID%>
+                            </td>
+                            <td>
+                                <%=line.type%>
+                            </td>
+                            <td>
+                                <%=line.subjectName%>
+                            </td>
+                            <td>
+                                <%=line.name%>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+            <br>
+            
+        </div>
+    </div>
+    <%- include('./partials/footer.ejs') %>
+    <script src="/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+    <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+        <a href="/">Home</a>
+        <a href="/subject" >New subject</a>
+        <a href="/student">Join subject</a>
+        <a href="#" class="active">Schedule</a> 
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>    
+    </nav>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="scheduleContainer">
+        <div class="schedule">
+            <h3>Interaktiv felulet</h3>
+            <table>
+                <tr>
+                    <th>Nap</th>
+                    <th>Óra</th>
+                    <th>Évfolyam</th>
+                    <th>Tipus</th>
+                    <th>Tantárgy</th>
+                    <th>Tanár</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="day" id="day">
+                            <option value="monday">Hétfő</option>
+                            <option value="tuesday">Kedd</option>
+                            <option value="wednesday">Szerda</option>
+                            <option value="thursday">Csütörtök</option>
+                            <option value="friday">Péntek</option>
+                            <option value="saturday">Szombat</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="hour" id="hour">
+                            <option value="08:00 - 10:00">08:00 - 10:00</option>
+                            <option value="10:00 - 12:00">10:00 - 12:00</option>
+                            <option value="12:00 - 14:00">12:00 - 14:00</option>
+                            <option value="14:00 - 16:00">14:00 - 16:00</option>
+                            <option value="16:00 - 18:00">16:00 - 18:00</option>
+                            <option value="18:00 - 20:00">18:00 - 20:00</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="year" id="year">
+                            <% years.forEach((year)=> { %>
+                                <option value="<%=year.groupID%>">
+                                    <%=year.subgroupID%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="type" id="type">
+                            <option value="course">Kurzus</option>
+                            <option value="seminar">Szeminarium</option>
+                            <option value="lab">Labor</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="subject" id="subject">
+                            <% subjects.forEach((subject)=> { %>
+                                <option value="<%=subject.subjectID%>">
+                                    <%=subject.subjectName%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="teacher" id="teacher">
+                            <% teachers.forEach((teacher)=> { %>
+                                <option value="<%=teacher.userID%>">
+                                    <%=teacher.name%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <%- include('./partials/footer.ejs') %>
+    <script src="/main.js"></script>
+</body>
+
+</html>

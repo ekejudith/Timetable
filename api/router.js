@@ -3,6 +3,17 @@ import { deleteFileOfSubject, getFilesOfSubject } from '../database/files.js';
 
 const router = express.Router();
 
+router.post('/logout', (request, response) => {
+  request.session.destroy((err) => {
+    if (err) {
+      response.status(500);
+    } else {
+      response.status(200);
+    }
+    response.send();
+  });
+});
+
 router.delete('/subject/:id', async (request, response) => {
   try {
     await deleteFileOfSubject(request.params.id);

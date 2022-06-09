@@ -1,9 +1,9 @@
 import dbConnection from './connection.js';
 
-export const insertSubject = (subject) => {
-  const query = 'Insert into Subjects values(?, ?, ?, ?, ?, ? );';
+export const insertSubject = (subject, userID) => {
+  const query = 'Insert into Subjects values(?, ?, ?, ?, ?, ? ,?);';
   return dbConnection.executeQuery(query, [subject.subjectID, subject.subjectName, subject.year,
-    subject.course, subject.seminar, subject.lab]);
+    subject.course, subject.seminar, subject.lab, userID]);
 };
 
 export const insertSubjectOfStudent = (student) => {
@@ -13,14 +13,14 @@ export const insertSubjectOfStudent = (student) => {
 
 export const deleteSubjectOfStudent = (subjectOfStudent) => {
   const query = `Delete from SubjectsOfStudent 
-    where subjectid = ? and studentid = ?;`;
+    where subjectID = ? and studentID = ?;`;
   return dbConnection.executeQuery(query, [subjectOfStudent.subjectID, subjectOfStudent.studentID]);
 };
 
 export const isSubject = async (subject) => {
-  const query = 'select * from subjects where subjectID = ? ;';
+  const query = 'select * from Subjects where subjectID = ? ';
   try {
-    const value = await dbConnection.executeQuery(query, [subject.subjectID]);
+    const value = await dbConnection.executeQuery(query, [subject]);
     if (value.length === 0) {
       return false;
     }
@@ -31,12 +31,12 @@ export const isSubject = async (subject) => {
   }
 };
 
-export const isSubjectOfStudent = async (subjectOfStudent) => {
-  const query = 'select * from SubjectsOfStudent where subjectid = ? and studentID = ? ;';
+export const isSubjectOfStudent = async (subjectID, studentID) => {
+  const query = 'select * from SubjectsOfStudent where subjectID = ? and studentID = ? ;';
   try {
     const value = await dbConnection.executeQuery(
       query,
-      [subjectOfStudent.subjectID, subjectOfStudent.studentID],
+      [subjectID, studentID],
     );
     if (value.length === 0) {
       return false;
@@ -53,8 +53,13 @@ export const getAllSubjects = () => {
   return dbConnection.executeQuery(query);
 };
 
+export const getSubjectsOfUser = (userID) => {
+  const query = 'Select * from Subjects where userID = ?';
+  return dbConnection.executeQuery(query, [userID]);
+};
+
 export const getSubject = async (subjectID) => {
-  const query = 'Select * from Subjects where subjectid = ?';
+  const query = 'Select * from Subjects where subjectID = ?';
   try {
     const value = await dbConnection.executeQuery(query, [subjectID]);
     return value[0];

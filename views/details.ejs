@@ -7,34 +7,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tantárgyak</title>
     <link rel="stylesheet" href="/main.css">
-
+    <script src="https://kit.fontawesome.com/57ff89206e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <nav class="topnav">
-        <a href="/" class="active">Home</a>
-        <a href="/subject">New subject</a>
-        <a href="/file">Upload file</a>
-        <a href="/student">Join subject</a>
+        <% if (role=='guest') {  %>
+            <img src="/pictures/guest.png" alt="user" onclick="openUserInformations()">
+            <a href="/" class="active">Home</a>
+        <% } else { %>
+            <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+            <a href="/" class="active">Home</a>
+            <a href="/subject">New subject</a>
+            <a href="/student">Join subject</a>
+            <a href="/schedule">Schedule</a> 
+        <% } %>
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } %>
+        <% if(role=='user'){ %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>   
     </nav>
+    <%- include('./partials/userInformation.ejs') %>
     <div class="subject-details">
         <div>
             <h2>Tantárgy adatai:</h1>
                 <table>
                     <tr>
-                        <th>Egyedi kod</th>
-                        <th>Nev</th>
-                        <th>Evfolyam</th>
-                        <th>Kurzusok szama</th>
-                        <th>Szeminariumok szama</th>
-                        <th>Laborok szama</th>
+                        <th>Egyedi kód</th>
+                        <th>Név</th>
+                        <th>Évfolyam</th>
+                        <th>Kurzusok száma</th>
+                        <th>Szeminariumok száma</th>
+                        <th>Laborok száma</th>
                     </tr>
                     <tr>
                         <td>
-                            <%=subject.subjectName %>
+                            <%=subject.subjectID %>
                         </td>
                         <td>
-                            <%=subject.subjectID %>
+                            <%=subject.subjectName %>
                         </td>
                         <td>
                             <%=subject.year %>
@@ -51,25 +64,42 @@
                     </tr>
                 </table>
         </div>
+        <h2>Fileok:</h2>
         <div class="subject-files">
-            <h2>Fileok:</h2>
-            <% files.forEach((file)=> { %>
+            <% if(role==='admin' || username===subject.userID) { %>
+              <% files.forEach((file)=> { %>
                 <p id="<%=file.id %>"><a href="/<%=file.filePath%>" download=<%=file.fileName%> >
                         <%=file.fileName%>
                     </a>
                     <button class="deleteButton"
-                        onclick="deleteLink(`<%=file.id %>`)">delete</button>
+                        onclick="deleteLink(`<%=file.id %>`)"><i class="fa-solid fa-trash-can"></i></button>
                 </p>
                 <% }) %>
+            <% } else { %>
+                <% files.forEach((file)=> { %>
+                    <p id="<%=file.id %>">
+                        <a href="/<%=file.filePath%>" download=<%=file.fileName%> >
+                            <%=file.fileName%>
+                        </a>
+                    </p>
+             <% }) } %>
+
         </div>
-        <div>
-            <h2>File feltöltés:</h2>
-            <form action="/file/submit/<%=subject.subjectID%>" method="post" enctype="multipart/form-data">
-                <p><input type="file" name="myfile" required /></p>
-                <p><input type="submit" value="Submit" /></p>
+        <% if(role==='admin' || username===subject.userID) { %>
+        <div class="fileUploadForm">   
+            <h3>File feltöltés:</h3>
+            <form  action="/details/<%=subject.subjectID%>" method="post" enctype="multipart/form-data">
+                <input class="input" type="file" name="myfile" required />
+                <br>
+                <br>
+                <input class="submit" type="submit" value="Submit" />
+                <br>
             </form>
         </div>
+        <% } %>
+        <%- include('./partials/popup.ejs') %> 
     </div>
+    <%- include('./partials/footer.ejs') %>
     <script src="/main.js"></script>
 </body>
 

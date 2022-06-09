@@ -1,0 +1,34 @@
+<div class="subnav-content">
+    <div class="sub-subnav">
+        <button class="sub-subnavbtn">Tanárok <i class="fa fa-caret-down"></i></button>
+        <div class="sub-subnav-content">
+            <% teachers.forEach((teacher)=> { %>
+                <a href="/timetable/teacher/<%= teacher.userID%>"> <%= teacher.name%></a>
+            <% }) %>
+        </div>
+    </div>
+    <div class="sub-subnav">  
+        <button class="sub-subnavbtn">Csoportok <i class="fa fa-caret-down"></i></button>
+        <div class="sub-subnav-content">
+            <% groups.forEach((group)=> { %>
+                <a href="/timetable/group/<%= group.groupID%>"><%= group.groupID%></a>
+            <% }) %>
+        </div>
+    </div>   
+    <div class="sub-subnav">  
+        <button class="sub-subnavbtn">Alcsoportok <i class="fa fa-caret-down"></i></button>
+        <div class="sub-subnav-content">
+            <% subgroups.forEach((group)=> { %>
+                <a href="/timetable/subgroup/<%= group.subgroupID%>"><%= group.subgroupID%></a>
+            <% }) %>
+        </div>
+    </div>   
+    <div class="sub-subnav">
+        <button class="sub-subnavbtn">Tantárgyak <i class="fa fa-caret-down"></i></button>
+        <div class="sub-subnav-content">
+            <% subjects.forEach((subject)=> { %>
+                <a href="/timetable/subject/<%= subject.subjectID%>"><%= subject.subjectName%></a>
+            <% }) %>
+        </div>
+    </div>   
+</div>

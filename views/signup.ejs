@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css">
+    <title>Sign Up</title>
+</head>
+
+<body class="signupBody">
+    <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+        <a href="/">Home</a>
+        <a href="/subject">New subject</a>
+        <a href="/student">Join subject</a>
+        <a href="/schedule">Schedule</a> 
+        <a href="#" class="active">Sign up</a>
+    </nav>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="formContainer">
+        <div class="signupForm">
+            <h3>Sign up</h3>
+            <form action="/signup" method="post" enctype="multipart/form-data">
+                <label for="name">Name</label>
+                <br>
+                <input class="input" type="text" name="name" required>
+                <br>
+                <label for="email">Email</label>
+                <br>
+                <input class="input" type="email" name="email" required>
+                <br>
+                <label for="password1">Password</label>
+                <br>
+                <input class="input" type="password" name="password1" required>
+                <br>
+                <label for="password2">Password</label>
+                <br>
+                <input class="input" type="password" name="password2" required>
+                <br>
+                <input type="submit" value="Submit" class="submit">
+                <label style="color: red;">
+                    <%=error%>
+                </label>
+            </form>
+        </div>
+    </div>
+        <%- include('./partials/footer.ejs') %>
+        <script src="/main.js"></script>
+
+
+</body>
+
+</html>

@@ -7,61 +7,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diak</title>
     <link rel="stylesheet" href="/main.css">
-
 </head>
 
 <body>
     <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
         <a href="/">Home</a>
         <a href="/subject">New subject</a>
-        <a href="/file">Upload file</a>
-        <a href="" class="active">Join subject</a>
+        <a href="#" class="active">Join subject</a>
+        <a href="/schedule">Schedule</a> 
+        <% if(role=='admin'){ %>
+            <a href="/signup">Sign up</a>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>   
     </nav>
-    <div>
-        <div>
-            <form action="/student/submit" method="post" enctype="multipart/form-data">
-                <p>Diak ID: 
-                    <select name="studentID" id="studentID">
-                        <% students.forEach((student)=> { %>
-                            <option value="<%=student.studentID %>">
-                                <%=student.studentID %>
-                            </option>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="formContainer">
+        <div class="uploadForm">
+            <h3>Diák tantárgyhoz adása</h3>
+            <form action="/student" method="post" enctype="multipart/form-data">
+                <label for="studentID">Diák ID:</label>
+                <br>
+                <select name="studentID" id="studentID">
+                    <% students.forEach((student)=> { %>
+                        <option value="<%=student.studentID %>">
+                            <%=student.studentID %>
+                        </option>
                         <% }) %>
-                    </select>
-                </p>
-                <p>Nev: 
-                    <select name="studentName" id="studentName">
-                        <% students.forEach((student)=> { %>
-                            <option value="<%=student.studentName%>">
-                                <%=student.studentName %>
-                            </option>
+                </select>
+                <br>
+                <label for="studentName">Név:</label>
+                <br>
+                <select name="studentName" id="studentName">
+                    <% students.forEach((student)=> { %>
+                        <option value="<%=student.studentName%>">
+                            <%=student.studentName %>
+                        </option>
                         <% }) %>
-                    </select>
-                </p>
-                <p>Tantargy kodja:
-                    <select name="subjectID" id="subjectID">
-                        <% subjects.forEach((subject)=> { %>
-                            <option value="<%=subject.subjectID %>">
-                                <%=subject.subjectID %>
-                            </option>
+                </select>
+                <br>
+                <label for="subjectID">Tantárgy kódja:</label>
+                <br>
+                <select name="subjectID" id="subjectID">
+                    <% subjects.forEach((subject)=> { %>
+                        <option value="<%=subject.subjectID %>">
+                            <%=subject.subjectID %>
+                        </option>
                         <% }) %>
-                    </select>
-                <p>Tantargyhoz valo:
-                    <select name="connection">
-                        <option value="join">Csatlakozas</option>
-                        <option value="unjoin">Kilepes</option>
-                    </select>
-                </p>
-                <p>
-                    <input type="submit" value="Submit">
-                    <label>
-                        <%=error %>
-                    </label>
-                </p>
+                </select>
+                <br>
+                <label for="connection">Tantárgyhoz való:</label>
+                <br>
+                <select name="connection">
+                    <option value="join">Csatlakozás</option>
+                    <option value="unjoin">Kilépés</option>
+                </select>
+                <br>
+                <input class="submit" type="submit" value="Submit">
+                <label style="color: red;">
+                    <%=error %>
+                </label>
             </form>
         </div>
     </div>
-    <script src="/main.js"></script>
+        <%- include('./partials/footer.ejs') %>
+            <script src="/main.js"></script>
 </body>
 
 </html>
