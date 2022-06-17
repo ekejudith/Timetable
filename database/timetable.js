@@ -1,19 +1,5 @@
 import dbConnection from './connection.js';
 
-export const isSubGroup = async (subgroupID) => {
-  const query = 'select * from Groups where subgroupID = ? ';
-  try {
-    const value = await dbConnection.executeQuery(query, [subgroupID]);
-    if (value.length === 0) {
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error(`Query error: ${err}`);
-    return false;
-  }
-};
-
 export const getTimetable = async () => {
   const query = `Select t.day, t.hour, t.subgroupID, t.type, 
   t.subjectID, s.subjectName, teacherID, u.name from Timetable as t
@@ -70,4 +56,19 @@ export const getTimetableOfSubject = async (subejctID) => {
         where s.subjectID = ? 
         order by d.dayID;`;
   return dbConnection.executeQuery(query, [subejctID]);
+};
+
+export const insertIntoTimetable = async (params) => {
+  console.log(params);
+  const query = 'insert into Timetable values(?,?,?,?,?,?);';
+  return dbConnection.executeQuery(query, [params.day, params.hour,
+    params.year, params.type, params.subject, params.teacher]);
+};
+
+export const deleteFromTimetable = async (params) => {
+  console.log(params);
+  const query = ` delete from Timetable 
+    WHERE day = ? and hour = ? and subgroupID = ? and type = ? and subjectID = ? and teacherID = ? ;`;
+  return dbConnection.executeQuery(query, [params.day, params.hour,
+    params.year, params.type, params.subject, params.teacher]);
 };

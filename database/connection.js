@@ -41,7 +41,7 @@ export const createTables = async () => {
       userID varchar(255),
       name varchar(255),
       password varchar(255),
-      role  varchar(10) not null check(role in('user','admin')),
+      role varchar(10) not null check(role in('user','admin')),
       primary key(userID) );`);
 
     await dbConnection.executeQuery(`
@@ -92,14 +92,7 @@ export const createTables = async () => {
       foreign key(teacherID) references Users(userID),
       foreign key(subgroupiD) references StudentGroups(subgroupiD) );`);
 
-    await dbConnection.executeQuery(' drop table if exists DaysOfWeek; ');
-
-    await dbConnection.executeQuery(`
-      create table DaysOfWeek (
-      dayID int AUTO_INCREMENT primary key,
-      dayName varchar(50) );`);
-
-    console.log('Tables created successfully');
+    console.log('Tables created successfully!');
   } catch (err) {
     console.error(`Create table error: ${err}`);
     process.exit(1);
@@ -110,10 +103,34 @@ export const insertIntoTables = async () => {
   const dbConnection = new DbConnection();
   try {
     await dbConnection.executeQuery(`
+    create table if not exists Wishes (
+      day varchar(50),
+      hour varchar(50),
+      subgroupiD varchar(10),
+      type varchar(50),
+      subjectID varchar(10),
+      teacherID varchar(255),
+      method varchar(100) not null check(method in('insert','delete')),
+      status varchar(100) check(status in('pending','approved','rejected')),
+      primary key(day, hour, teacherID, method),
+      foreign key(subjectID) references Subjects(subjectID),
+      foreign key(teacherID) references Users(userID),
+      foreign key(subgroupiD) references StudentGroups(subgroupiD) );`);
+
+    await dbConnection.executeQuery(' drop table if exists DaysOfWeek; ');
+
+    await dbConnection.executeQuery(`
+        create table DaysOfWeek (
+        dayID int AUTO_INCREMENT primary key,
+        dayName varchar(50) );`);
+
+    await dbConnection.executeQuery(`
       insert into DaysOfWeek(dayName) values('Hétfő'), ('Kedd'), ('Szerda'), ('Csütörtök'), ('Péntek'), ('Szombat');`);
+
+    console.log('Inserted data successfully!');
   } catch (err) {
     console.error(`Insert into table error: ${err}`);
-    // process.exit(1);
+    process.exit(1);
   }
 };
 

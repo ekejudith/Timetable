@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diak</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+    <nav class="topnav">
+        <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
+        <a href="/">Home</a>
+        <a href="/subject">New subject</a>
+        <a href="/student">Join subject</a>
+        <a href="/schedule">Schedule</a> 
+        <% if(role=='admin'){ %>
+            <a href="/teacher" class="active">Add teacher</a>
+            <a href="/signup">Sign up</a>
+        <% } else { %>
+            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
+        <%}%>   
+    </nav>
+    <%- include('./partials/userInformation.ejs') %>
+    <div class="formContainer">
+        <div class="uploadForm">
+            <h3>Tanár tantárgyhoz adása</h3>
+            <form action="/teacher" method="post" enctype="multipart/form-data">
+                <label for="teacherID">Tanár:</label>
+                <br>
+                <select name="teacherID" id="teacherID">
+                    <% teachers.forEach((teacher)=> { %>
+                        <option value="<%=teacher.userID %>">
+                            <%=teacher.name %>
+                        </option>
+                        <% }) %>
+                </select>
+                <br>
+                <label for="subjectID">Tantárgy:</label>
+                <br>
+                <select name="subjectID" id="subjectID">
+                    <% subjects.forEach((subject)=> { %>
+                        <option value="<%=subject.subjectID %>">
+                            <%=subject.subjectName %>
+                        </option>
+                        <% }) %>
+                </select>
+                <br>
+                <input class="submit" type="submit" value="Hozzáad">
+            </form>
+        </div>
+    </div>
+        <%- include('./partials/footer.ejs') %>
+            <script src="/main.js"></script>
+</body>
+
+</html>

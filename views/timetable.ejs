@@ -19,6 +19,7 @@
         <a href="/student">Join subject</a>
         <a href="/schedule">Schedule</a> 
         <% if(role=='admin'){ %>
+            <a href="/teacher">Add teacher</a>
             <a href="/signup">Sign up</a>
             <div class="subnav">
                 <button class="subnavbtn active">Timetables <i class="fa fa-caret-down"></i></button>
@@ -57,16 +58,16 @@
                                 <%=line.hour%>
                             </td>
                             <td>
-                                <%=line.subgroupID%>
+                                <a href="/timetable/subgroup/<%=line.subgroupID%>"><%=line.subgroupID%></a>
                             </td>
                             <td>
                                 <%=line.type%>
                             </td>
                             <td>
-                                <%=line.subjectName%>
+                                <a href="/timetable/subject/<%=line.subjectID%>"><%=line.subjectName%></a>   
                             </td>
                             <td>
-                                <%=line.name%>
+                                <a href="/timetable/teacher/<%=line.teacherID%>"><%=line.name%></a>
                             </td>
                         </tr>
                         <% }) %>

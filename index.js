@@ -1,10 +1,12 @@
 import express from 'express';
 import session from 'express-session';
-import bcrypt from 'bcrypt';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import eformidable from 'express-formidable';
 import { getAllSubjects } from './database/subjects.js';
+import { getAllTeachers } from './database/users.js';
+import { checkRole, isAdmin } from './auth/middleware.js';
+import { getAllGroups, getAllSubgroups } from './database/groups.js';
 import detailRouter from './routes/details.js';
 import studentRouter from './routes/student.js';
 import subjectRouter from './routes/subject.js';
@@ -12,12 +14,8 @@ import apiRouter from './api/router.js';
 import signupRouter from './routes/signup.js';
 import timetableRouter from './routes/timetable.js';
 import scheduleRouter from './routes/schedule.js';
-import {
-  getAllTeachers,
-  getPassword, getRole,
-} from './database/users.js';
-import { checkRole, isAdmin } from './auth/middleware.js';
-import { getAllGroups, getAllSubgroups } from './database/groups.js';
+import loginRouter from './routes/login.js';
+import teacherRouter from './routes/teacher.js';
 
 const app = express();
 
@@ -40,37 +38,7 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
-app.get('/login', async (request, response, next) => {
-  if (request.session.username) {
-    next();
-  } else {
-    response.render('login');
-  }
-});
-
-app.post('/login', async (request, response) => {
-  if (request.fields.email && request.fields.password) {
-    try {
-      const password = await getPassword(request.fields.email);
-      if (password) {
-        const valid = await bcrypt.compare(request.fields.password, password);
-        if (valid) {
-          const role = await getRole(request.fields.email);
-          request.session.username = request.fields.email;
-          request.session.role = role;
-          response.redirect('/');
-        } else {
-          response.redirect('/login');
-        }
-      } else {
-        response.redirect('/login');
-      }
-    } catch (err) {
-      console.error(err);
-      response.render('error', { error: 'Something went wrong!', status: 500 });
-    }
-  }
-});
+app.use('/login', loginRouter);
 
 app.use((request, response, next) => {
   if (request.session.username) {
@@ -83,15 +51,16 @@ app.use((request, response, next) => {
 
 app.use('/api', apiRouter);
 app.use('/details', detailRouter);
-app.use('/schedule', scheduleRouter);
 
-app.use('/signup', isAdmin);
-app.use('/signup', signupRouter);
-
-app.use(['/student', '/subject', '/timetable'], checkRole);
+app.use(['/student', '/subject', '/timetable', '/schedule'], checkRole);
 app.use('/student', studentRouter);
 app.use('/subject', subjectRouter);
 app.use('/timetable', timetableRouter);
+app.use('/schedule', scheduleRouter);
+
+app.use(['/signup', '/teacher'], isAdmin);
+app.use('/signup', signupRouter);
+app.use('/teacher', teacherRouter);
 
 app.use('/*', async (request, response) => {
   try {

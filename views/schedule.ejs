@@ -7,95 +7,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/main.css">
+    <script src="https://kit.fontawesome.com/57ff89206e.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
     <nav class="topnav">
         <img src="/pictures/user.png" alt="user" onclick="openUserInformations()">
         <a href="/">Home</a>
-        <a href="/subject" >New subject</a>
+        <a href="/subject">New subject</a>
         <a href="/student">Join subject</a>
-        <a href="#" class="active">Schedule</a> 
-        <% if(role=='admin'){ %>
+        <a href="#" class="active">Schedule</a>
+        <% if(role=='admin' ){ %>
+            <a href="/teacher" >Add teacher</a>
             <a href="/signup">Sign up</a>
-        <% } else { %>
-            <a href="/timetable/teacher/<%=username%>">Timetable</a> 
-        <%}%>    
+            <% } else { %>
+                <a href="/timetable/teacher/<%=username%>">Timetable</a>
+                <%}%>
     </nav>
     <%- include('./partials/userInformation.ejs') %>
-    <div class="scheduleContainer">
-        <div class="schedule">
-            <h3>Interaktiv felulet</h3>
-            <table>
-                <tr>
-                    <th>Nap</th>
-                    <th>Óra</th>
-                    <th>Évfolyam</th>
-                    <th>Tipus</th>
-                    <th>Tantárgy</th>
-                    <th>Tanár</th>
-                </tr>
-                <tr>
-                    <td>
-                        <select name="day" id="day">
-                            <option value="monday">Hétfő</option>
-                            <option value="tuesday">Kedd</option>
-                            <option value="wednesday">Szerda</option>
-                            <option value="thursday">Csütörtök</option>
-                            <option value="friday">Péntek</option>
-                            <option value="saturday">Szombat</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="hour" id="hour">
-                            <option value="08:00 - 10:00">08:00 - 10:00</option>
-                            <option value="10:00 - 12:00">10:00 - 12:00</option>
-                            <option value="12:00 - 14:00">12:00 - 14:00</option>
-                            <option value="14:00 - 16:00">14:00 - 16:00</option>
-                            <option value="16:00 - 18:00">16:00 - 18:00</option>
-                            <option value="18:00 - 20:00">18:00 - 20:00</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="year" id="year">
-                            <% years.forEach((year)=> { %>
-                                <option value="<%=year.groupID%>">
-                                    <%=year.subgroupID%>
-                                </option>
+        <div class="scheduleContainer">
+
+
+
+            <div class="schedule">
+                <h3>Órarendhez adás</h3>
+                <form id="schedule_form" action="/schedule/add" method="post" enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <th>Nap</th>
+                            <th>Óra</th>
+                            <th>Évfolyam</th>
+                            <th>Tipus</th>
+                            <th>Tantárgy</th>
+                            <th>Tanár</th>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <select name="day" id="day">
+                                    <option value="Hétfő">Hétfő</option>
+                                    <option value="Kedd">Kedd</option>
+                                    <option value="Szerda">Szerda</option>
+                                    <option value="Csütörtök">Csütörtök</option>
+                                    <option value="Péntek">Péntek</option>
+                                    <option value="Szombat">Szombat</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="hour" id="hour">
+                                    <option value="08:00 - 10:00">08:00 - 10:00</option>
+                                    <option value="10:00 - 12:00">10:00 - 12:00</option>
+                                    <option value="12:00 - 14:00">12:00 - 14:00</option>
+                                    <option value="14:00 - 16:00">14:00 - 16:00</option>
+                                    <option value="16:00 - 18:00">16:00 - 18:00</option>
+                                    <option value="18:00 - 20:00">18:00 - 20:00</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="year" id="year">
+                                    <% years.forEach((year)=> { %>
+                                        <option value="<%=year.subgroupID%>">
+                                            <%=year.subgroupID%>
+                                        </option>
+                                        <% }) %>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="type" id="type">
+                                    <option value="course">Kurzus</option>
+                                    <option value="seminar">Szeminarium</option>
+                                    <option value="lab">Labor</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="subject" id="subject">
+                                    <% subjects.forEach((subject)=> { %>
+                                        <option value="<%=subject.subjectID%>">
+                                            <%=subject.subjectName%>
+                                        </option>
+                                        <% }) %>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="teacher" id="teacher">
+                                    <% if(role=='admin') {
+                                        teachers.forEach((teacher)=> { %>
+                                        <option value="<%=teacher.userID%>">
+                                            <%=teacher.name%>
+                                        </option>
+                                    <% }) } else { %>
+                                        <option value="<%=teachers%>">
+                                            <%=teachers%>
+                                        </option>
+                                    <% } %>
+
+                                </select>
+                            </td>
+                            <td>
+                                <input type="submit" class="add" value="Add">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+            <% if(role=='user' ){ %>
+                <div class="timetable">
+                    <h3> Órarend </h3>
+                    <table id="timetable">
+                        <thead>
+                            <tr>
+                                <th>Nap</th>
+                                <th>Óra</th>
+                                <th>Évfolyam</th>
+                                <th>Tipus</th>
+                                <th>Tantárgy</th>
+                                <th>Tanár</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% lines.forEach((line)=> { %>
+                                <tr>
+                                    <td id="<%=line.day%>">
+                                        <%=line.day%>
+                                    </td>
+                                    <td id="<%=line.hour%>">
+                                        <%=line.hour%>
+                                    </td>
+                                    <td id="<%=line.subgroupID%>">
+                                        <%=line.subgroupID%>
+                                    </td>
+                                    <td id="<%=line.type%>">
+                                        <%=line.type%>
+                                    </td>
+                                    <td id="<%=line.subjectID%>">
+                                        <%=line.subjectName%>
+                                    </td>
+                                    <td id="<%=line.teacherID%>">
+                                        <%=line.name%>
+                                    </td>
+                                    <td>
+                                        <button>Delete</button>
+                                    </td>
+                                </tr>
                                 <% }) %>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="type" id="type">
-                            <option value="course">Kurzus</option>
-                            <option value="seminar">Szeminarium</option>
-                            <option value="lab">Labor</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="subject" id="subject">
-                            <% subjects.forEach((subject)=> { %>
-                                <option value="<%=subject.subjectID%>">
-                                    <%=subject.subjectName%>
-                                </option>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+
+                    <div class="wishes" >
+                        <h3> Kivánság lista </h3>
+                        <table id="wishes">
+                            <thead>
+                                <tr>
+                                    <th>Nap</th>
+                                    <th>Óra</th>
+                                    <th>Évfolyam</th>
+                                    <th>Tipus</th>
+                                    <th>Tantárgy</th>
+                                    <th>Tanár</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% wishes.forEach((wish)=> { %>
+                                    <tr>
+                                        <td id="<%=wish.day%>">
+                                            <%=wish.day%>
+                                        </td>
+                                        <td id="<%=wish.hour%>">
+                                            <%=wish.hour%>
+                                        </td>
+                                        <td id="<%=wish.subgroupID%>">
+                                            <%=wish.subgroupID%>
+                                        </td>
+                                        <td id="<%=wish.type%>">
+                                            <%=wish.type%>
+                                        </td>
+                                        <td id="<%=wish.subjectID%>">
+                                            <%=wish.subjectName%>
+                                        </td>
+                                        <td id="<%=wish.teacherID%>">
+                                            <%=wish.name%>
+                                        </td>
+                                        <td id="<%=wish.method%>">
+                                            <%=wish.method%>
+                                        </td>
+                                        <td class="<%=wish.status%>" id="<%=wish.status%>">
+                                            <%=wish.status%>
+                                        </td>
+                                        <%  if(role=='admin'){ %>
+                                            <td>
+                                                <button class="reject">Reject</button>
+                                            </td>
+                                            <td>
+                                                <button class="resolve">Accept</button>
+                                            </td>
+                                        <% } %>
+                                    </tr>
                                 <% }) %>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="teacher" id="teacher">
-                            <% teachers.forEach((teacher)=> { %>
-                                <option value="<%=teacher.userID%>">
-                                    <%=teacher.name%>
-                                </option>
-                                <% }) %>
-                        </select>
-                    </td>
-                </tr>
-            </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
         </div>
-    </div>
-    <%- include('./partials/footer.ejs') %>
-    <script src="/main.js"></script>
+        <%- include('./partials/popup.ejs') %>
+        <%- include('./partials/footer.ejs') %>
+        <script src="/main.js"></script>
 </body>
 
 </html>

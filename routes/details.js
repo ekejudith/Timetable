@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { getFilesOfSubject, insertFileOfSubject } from '../database/files.js';
-import { getSubject } from '../database/subjects.js';
+import { getSubject, getUserOfSubject } from '../database/subjects.js';
 
 const router = express.Router();
 
@@ -26,11 +26,12 @@ router.post('/:id', async (request, response, next) => {
 
 router.use('/:id', async (request, response) => {
   try {
-    const subject = await getSubject(request.params.id);
+    const [subject, name] = await Promise.all([getSubject(request.params.id),
+      getUserOfSubject(request.params.id)]);
     if (subject !== undefined) {
       const files = await getFilesOfSubject(request.params.id);
       response.render('details', {
-        subject, files, username: request.session.username, role: request.session.role,
+        subject, files, username: request.session.username, role: request.session.role, name,
       });
     } else {
       response.redirect('/');

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-unused-vars */
 function nameValidator() {
@@ -66,13 +67,6 @@ function closeOkPopup() {
   const popup = document.getElementById('okPopup');
   popup.classList.remove('open-okPopup');
 }
-
-const form = document.getElementById('form_tantargyak');
-form.addEventListener('submit', async (e) => {
-  if (!(nameValidator() && courseValidator() && seminarValidator() && labValidator())) {
-    e.preventDefault();
-  }
-});
 
 async function deleteLink(fileId) {
   const linkToDelete = document.getElementById(`${fileId}`);
@@ -148,7 +142,7 @@ async function logout() {
       method: 'POST',
     });
     if (result.status === 200) {
-      window.open('http://localhost:8080/', '_self');
+      window.open('/login', '_self');
     }
   } catch (error) {
     console.log(error);
@@ -156,5 +150,164 @@ async function logout() {
 }
 
 function login() {
-  window.open('http://localhost:8080/login', '_self');
+  console.log(this);
+  window.open('/login', '_self');
 }
+
+const scheduleForm = document.getElementById('schedule_form');
+scheduleForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const myform = e.target;
+  const formData = new FormData(myform);
+
+  const resp = await fetch('/schedule/add ', { method: 'POST', body: formData });
+  if (resp.status === 200) {
+    openOkPopup('Added succesfully!');
+  } else {
+    openErrorPopup('Cannot add to timetable!');
+  }
+});
+
+function adminInsert() {
+  const table = document.getElementById('wishes');
+  const buttonsResolve = table.getElementsByClassName('resolve');
+
+  for (let i = 0; i < buttonsResolve.length; i += 1) {
+    const button = buttonsResolve[i];
+    button.onclick =  async function () {
+      const rowId = this.parentNode.parentNode.rowIndex;
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+        status: col[7].id,
+        method: col[6].id,
+      };
+      console.log(wish);
+
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'POST',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+      if (response.status === 200) {
+        openOkPopup('Accepted succesfully!');
+        table.deleteRow(rowId);
+      } else {
+        openErrorPopup('Cannot accept request!');
+      }
+    };
+  }
+}
+
+function adminDelete() {
+  const table = document.getElementById('wishes');
+  const buttonsReject = table.getElementsByClassName('reject');
+  for (let i = 0; i < buttonsReject.length; i += 1) {
+    const button = buttonsReject[i];
+    button.onclick =  async function () {
+      const rowId = this.parentNode.parentNode.rowIndex;
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+        status: col[7].id,
+        method: col[6].id,
+      };
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'Delete',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+      if (response.status === 200) {
+        openOkPopup('Rejected succesfully!');
+        table.deleteRow(rowId);
+      } else {
+        openErrorPopup('Cannot reject request!');
+      }
+    };
+  }
+}
+
+function userDelete() {
+  const table = document.getElementById('timetable');
+  const userButtons = table.getElementsByTagName('button');
+  for (let i = 0; i < userButtons.length; i += 1) {
+    const button = userButtons[i];
+    button.onclick = async function () {
+      const rowId = this.parentNode.parentNode.rowIndex;
+
+      const rowSelected = table.getElementsByTagName('tr')[rowId];
+      const col = rowSelected.getElementsByTagName('td');
+
+      const wish = {
+        day: col[0].id,
+        hour: col[1].id,
+        year: col[2].id,
+        type: col[3].id,
+        subject: col[4].id,
+        teacher: col[5].id,
+      };
+      const response = await fetch(
+        '/schedule/wish',
+        {
+          method: 'Delete',
+          body: JSON.stringify(wish),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        openOkPopup('Added to wishlist succesfully!');
+        const row = document.getElementById('wishes').insertRow();
+        let cell = '';
+        for (let j = 0; j < 6; j += 1) {
+          cell = row.insertCell(j);
+          cell.innerText = col[j].innerText;
+        }
+        cell = row.insertCell(6);
+        cell.innerText = 'delete';
+        cell = row.insertCell(7);
+        cell.innerText = 'pending';
+        cell.setAttribute('class', 'pending');
+      } else {
+        openErrorPopup('Cannot add to wishlist!');
+      }
+    };
+  }
+}
+
+adminInsert();
+adminDelete();
+userDelete();
+
+const form = document.getElementById('form_tantargyak');
+form.addEventListener('submit', async (e) => {
+  if (!(nameValidator() && courseValidator() && seminarValidator() && labValidator())) {
+    e.preventDefault();
+  }
+});
